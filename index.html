@@ -243,13 +243,57 @@ nav{background:#111;display:flex;align-items:center;justify-content:space-betwee
 .notice-content-cell strong{color:#FF0000;}
 
 /* REVIEW PAGE */
-.review-hero{background:#111;padding:60px 40px;text-align:center;color:#fff;}
-.review-hero h1{font-size:40px;font-weight:900;margin-bottom:10px;}
-.review-stats{display:flex;gap:40px;justify-content:center;margin-top:30px;}
-.stat-num{font-size:40px;font-weight:900;color:#FF0000;}
-.stat-label{font-size:13px;color:#aaa;margin-top:4px;}
-.review-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:1100px;margin:0 auto;padding:60px 40px;}
-.review-card-full{background:#fff;border:1px solid #eee;border-radius:14px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.review-hero{background:linear-gradient(135deg,#0a0a0a,#1a1a1a);padding:80px 40px;text-align:center;color:#fff;position:relative;overflow:hidden;}
+.review-hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(255,0,0,.15),transparent 70%);}
+.review-hero h1{font-size:48px;font-weight:900;margin-bottom:16px;position:relative;}
+.review-hero p{color:#aaa;font-size:16px;position:relative;}
+.review-stats{display:flex;gap:0;justify-content:center;margin-top:50px;position:relative;}
+.stat-item{padding:30px 50px;border-right:1px solid #333;text-align:center;}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-size:48px;font-weight:900;color:#fff;line-height:1;}
+.stat-num span{color:#FF0000;}
+.stat-label{font-size:13px;color:#777;margin-top:8px;}
+
+/* 평점 요약 */
+.rating-summary{background:#fff;padding:60px 40px;}
+.rating-inner{max-width:900px;margin:0 auto;display:flex;gap:60px;align-items:center;}
+.rating-big{text-align:center;flex-shrink:0;}
+.rating-big .num{font-size:80px;font-weight:900;color:#111;line-height:1;}
+.rating-big .stars-big{font-size:28px;color:#FFB800;margin:8px 0;}
+.rating-big .total{font-size:14px;color:#999;}
+.rating-bars{flex:1;}
+.rating-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.rating-bar-label{font-size:13px;color:#555;width:30px;text-align:right;flex-shrink:0;}
+.rating-bar-track{flex:1;height:10px;background:#f0f0f0;border-radius:5px;overflow:hidden;}
+.rating-bar-fill{height:100%;background:linear-gradient(90deg,#FFB800,#FF8800);border-radius:5px;}
+.rating-bar-count{font-size:12px;color:#999;width:30px;flex-shrink:0;}
+
+/* 필터 탭 */
+.review-filter{background:#f8f8f8;padding:20px 40px;border-bottom:1px solid #eee;}
+.review-filter-inner{max-width:1100px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap;}
+.r-filter-tab{padding:8px 20px;border-radius:20px;border:1.5px solid #ddd;cursor:pointer;font-size:13px;font-weight:500;background:#fff;color:#555;transition:.2s;}
+.r-filter-tab.active,.r-filter-tab:hover{background:#111;color:#fff;border-color:#111;}
+
+/* 리뷰 카드 그리드 */
+.review-grid-section{background:#f8f8f8;padding:40px;}
+.review-masonry{max-width:1100px;margin:0 auto;columns:3;gap:20px;}
+.review-item{break-inside:avoid;background:#fff;border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #f0f0f0;transition:.2s;}
+.review-item:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
+.review-item.hidden{display:none;}
+.review-item-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.review-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;}
+.review-info .name{font-size:14px;font-weight:700;color:#111;}
+.review-info .plan{font-size:12px;color:#999;margin-top:2px;}
+.review-item-stars{color:#FFB800;font-size:13px;margin-bottom:10px;}
+.review-item-title{font-size:16px;font-weight:700;color:#111;margin-bottom:8px;}
+.review-item-body{font-size:14px;color:#555;line-height:1.7;}
+.review-item-tag{display:inline-block;background:#f8f8f8;border:1px solid #eee;border-radius:12px;padding:4px 10px;font-size:11px;color:#888;margin-top:12px;}
+.review-verified{display:flex;align-items:center;gap:4px;font-size:11px;color:#22cc44;margin-top:10px;}
+
+/* 더보기 버튼 */
+.load-more-wrap{text-align:center;padding:40px;}
+.load-more-btn{background:#111;color:#fff;border:none;padding:16px 50px;border-radius:30px;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;}
+.load-more-btn:hover{background:#FF0000;}
 
 /* CTA */
 .cta-banner{background:#FF0000;padding:60px 40px;text-align:center;color:#fff;}
@@ -511,18 +555,204 @@ footer strong{color:#888;}
 
 <!-- 전체리뷰 -->
 <div id="page-review" class="page">
-  <div class="review-hero"><h1>전체 리뷰</h1><p style="color:#aaa;">실제 고객님들의 생생한 후기</p><div class="review-stats"><div class="stat"><div class="stat-num">4.9</div><div class="stat-label">평균 평점</div></div><div class="stat"><div class="stat-num">98%</div><div class="stat-label">재구매율</div></div><div class="stat"><div class="stat-num">500+</div><div class="stat-label">누적 구매자</div></div></div></div>
-  <div class="review-grid">
-    <div class="review-card-full"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title" style="font-size:16px;font-weight:700;margin-bottom:8px;">30초 컷 실화냐?</div><div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px;">결제하자마자 카톡 띠링 울려서 깜놀했네요. 진짜 빠르다.</div><div style="font-size:12px;color:#aaa;">김O수님 · 3개월째 이용</div></div>
-    <div class="review-card-full"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title" style="font-size:16px;font-weight:700;margin-bottom:8px;">가격이 깡패입니다</div><div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px;">월 15,000원 내다가 4,500원 꼴이라니... 진작에 할걸 그랬어요.</div><div style="font-size:12px;color:#aaa;">이O호님 · 12개월권</div></div>
-    <div class="review-card-full"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title" style="font-size:16px;font-weight:700;margin-bottom:8px;">VPN 안 써서 너무 편함</div><div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px;">다른 데는 VPN 켜고 우회하고 난리쳐야 하는데 여긴 링크 누르고 가입 누르면 끝.</div><div style="font-size:12px;color:#aaa;">박O진님 · 신규</div></div>
-    <div class="review-card-full"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title" style="font-size:16px;font-weight:700;margin-bottom:8px;">알고리즘 그대로 유지됨</div><div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px;">계정 새로 파야 되는 줄 알고 걱정했는데 쓰던 거 그대로 써서 구독 채널 다 살아있어요!</div><div style="font-size:12px;color:#aaa;">최O혁님 · 재연장</div></div>
-    <div class="review-card-full"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title" style="font-size:16px;font-weight:700;margin-bottom:8px;">새벽 3시에도 바로 됨</div><div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px;">밤새 유튜브 보다가 광고 짜증나서 샀는데 새벽인데도 3초 만에 알림 톡 오네요.</div><div style="font-size:12px;color:#aaa;">강O우님 · 12개월권</div></div>
-    <div class="review-card-full"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title" style="font-size:16px;font-weight:700;margin-bottom:8px;">비번 안 알려줘도 돼서 안심</div><div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px;">남한테 비번 알려주기 찝찝했는데 초대장 방식이라 제 정보가 털릴 일이 없네요.</div><div style="font-size:12px;color:#aaa;">조O현님 · 6개월권</div></div>
-    <div class="review-card-full"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title" style="font-size:16px;font-weight:700;margin-bottom:8px;">광고 없는 삶... 최고</div><div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px;">이제 광고 나오는 유튜브는 상상할 수도 없습니다. 삶의 질이 달라짐.</div><div style="font-size:12px;color:#aaa;">윤O서님 · 신규</div></div>
-    <div class="review-card-full"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title" style="font-size:16px;font-weight:700;margin-bottom:8px;">뮤직까지 공짜라니</div><div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px;">유튜브만 되는 줄 알았는데 유튜브 뮤직도 되네요? 멜론 해지하고 이걸로 갈아탔습니다.</div><div style="font-size:12px;color:#aaa;">장O원님 · 12개월권</div></div>
+
+  <!-- 히어로 -->
+  <div class="review-hero">
+    <h1>고객님들의 생생한 찐 후기</h1>
+    <p>실제 구매 고객님들의 솔직한 리뷰입니다</p>
+    <div class="review-stats">
+      <div class="stat-item"><div class="stat-num"><span>4.9</span></div><div class="stat-label">⭐ 평균 평점</div></div>
+      <div class="stat-item"><div class="stat-num">98<span>%</span></div><div class="stat-label">재구매율</div></div>
+      <div class="stat-item"><div class="stat-num">500<span>+</span></div><div class="stat-label">누적 구매자</div></div>
+      <div class="stat-item"><div class="stat-num">0<span>건</span></div><div class="stat-label">무사고</div></div>
+    </div>
   </div>
-  <div class="cta-banner"><h2>지금 바로 시작하세요!</h2><p>월 5,500원으로 광고 없는 유튜브를 경험하세요</p><a onclick="showPage('buy')" class="btn-cta">구매하러 가기 →</a></div>
+
+  <!-- 평점 요약 -->
+  <div class="rating-summary">
+    <div class="rating-inner">
+      <div class="rating-big">
+        <div class="num">4.9</div>
+        <div class="stars-big">⭐⭐⭐⭐⭐</div>
+        <div class="total">총 500+ 리뷰</div>
+      </div>
+      <div class="rating-bars">
+        <div class="rating-bar-row"><span class="rating-bar-label">5점</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:92%"></div></div><span class="rating-bar-count">462</span></div>
+        <div class="rating-bar-row"><span class="rating-bar-label">4점</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:6%;background:#ddd"></div></div><span class="rating-bar-count">30</span></div>
+        <div class="rating-bar-row"><span class="rating-bar-label">3점</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:1%;background:#ddd"></div></div><span class="rating-bar-count">5</span></div>
+        <div class="rating-bar-row"><span class="rating-bar-label">2점</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0.5%;background:#ddd"></div></div><span class="rating-bar-count">2</span></div>
+        <div class="rating-bar-row"><span class="rating-bar-label">1점</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0.2%;background:#ddd"></div></div><span class="rating-bar-count">1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 필터 탭 -->
+  <div class="review-filter">
+    <div class="review-filter-inner">
+      <div class="r-filter-tab active" onclick="filterReview(this,'all')">전체</div>
+      <div class="r-filter-tab" onclick="filterReview(this,'youtube')">유튜브 프리미엄</div>
+      <div class="r-filter-tab" onclick="filterReview(this,'gemini')">제미나이</div>
+      <div class="r-filter-tab" onclick="filterReview(this,'chatgpt')">ChatGPT</div>
+      <div class="r-filter-tab" onclick="filterReview(this,'canva')">캔바</div>
+    </div>
+  </div>
+
+  <!-- 리뷰 카드 -->
+  <div class="review-grid-section">
+    <div class="review-masonry" id="review-masonry">
+
+      <div class="review-item" data-cat="youtube">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#FF0000,#ff6600)">김</div>
+          <div class="review-info"><div class="name">김O수</div><div class="plan">유튜브 프리미엄 12개월권</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">30초 컷 실화냐?</div>
+        <div class="review-item-body">결제하자마자 카톡 띠링 울려서 깜놀했네요. 이렇게 빠를 줄 몰랐어요. 링크 클릭하고 바로 광고 없어지는 거 확인했습니다. 진짜 강추!</div>
+        <div class="review-item-tag">⚡ 빠른 발송</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="youtube">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#3399FF,#0066cc)">이</div>
+          <div class="review-info"><div class="name">이O호</div><div class="plan">유튜브 프리미엄 12개월권</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">가격이 깡패입니다</div>
+        <div class="review-item-body">월 15,000원 내다가 4,500원 꼴이라니... 진작에 할걸 그랬어요. 1년치 한 번에 결제하니까 더 저렴하고 관리도 편해요. 재구매 확정입니다.</div>
+        <div class="review-item-tag">💰 가격 만족</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="youtube">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#22cc44,#009933)">박</div>
+          <div class="review-info"><div class="name">박O진</div><div class="plan">유튜브 프리미엄 3개월권</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">VPN 안 써서 너무 편함</div>
+        <div class="review-item-body">다른 데는 VPN 켜고 우회하고 난리쳐야 하는데 여긴 링크 누르고 가입 누르면 끝이라 대박 편함. 컴맹인 부모님도 사용하실 수 있을 것 같아요.</div>
+        <div class="review-item-tag">🔒 간편 사용</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="youtube">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#9933FF,#6600cc)">최</div>
+          <div class="review-info"><div class="name">최O혁</div><div class="plan">유튜브 프리미엄 12개월권 재연장</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">알고리즘 그대로 유지됨</div>
+        <div class="review-item-body">계정 새로 파야 되는 줄 알고 걱정했는데 쓰던 거 그대로 써서 구독 채널 다 살아있어요! 시청 기록도 그대로고 진짜 완벽합니다. 벌써 3번째 연장이에요.</div>
+        <div class="review-item-tag">🔄 재구매</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="youtube">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#FF6600,#cc4400)">강</div>
+          <div class="review-info"><div class="name">강O우</div><div class="plan">유튜브 프리미엄 12개월권</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">새벽 3시에도 바로 됨</div>
+        <div class="review-item-body">밤새 유튜브 보다가 광고 짜증나서 샀는데 새벽인데도 3초 만에 알림 톡 오네요. 자동화 시스템이 잘 되어 있는 것 같아요. 응대도 친절하고 완벽!</div>
+        <div class="review-item-tag">⚡ 빠른 발송</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="youtube">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#FF3399,#cc0066)">조</div>
+          <div class="review-info"><div class="name">조O현</div><div class="plan">유튜브 프리미엄 6개월권</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">비번 안 알려줘도 돼서 안심</div>
+        <div class="review-item-body">남한테 비번 알려주기 찝찝했는데 여긴 초대장 방식이라 제 정보가 털릴 일이 없네요. 보안이 확실하고 믿을 수 있는 서비스입니다. 가족들한테도 추천했어요.</div>
+        <div class="review-item-tag">🔐 보안 안심</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="youtube">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#00CCAA,#009977)">윤</div>
+          <div class="review-info"><div class="name">윤O서</div><div class="plan">유튜브 프리미엄 12개월권</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">광고 없는 삶... 최고</div>
+        <div class="review-item-body">이제 광고 나오는 유튜브는 상상할 수도 없습니다. 삶의 질이 달라짐. 무조건 하세요. 특히 운전 중에 유튜브 뮤직 백그라운드 재생되는 거 최고입니다.</div>
+        <div class="review-item-tag">🎵 뮤직 포함</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="youtube">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#FF9900,#cc6600)">장</div>
+          <div class="review-info"><div class="name">장O원</div><div class="plan">유튜브 프리미엄 12개월권</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">뮤직까지 공짜라니</div>
+        <div class="review-item-body">유튜브만 되는 줄 알았는데 유튜브 뮤직도 되네요? 멜론 해지하고 이걸로 갈아탔습니다. 개이득. 음질도 나쁘지 않고 오프라인 저장도 돼서 지하철에서 유용해요.</div>
+        <div class="review-item-tag">🎵 뮤직 포함</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="gemini">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#4285F4,#0F9D58)">정</div>
+          <div class="review-info"><div class="name">정O민</div><div class="plan">제미나이 프로 18개월 팩</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">가족이랑 같이 써서 대박 가성비</div>
+        <div class="review-item-body">부모님, 형제 포함해서 6명이 같이 쓰는데 1인당 월 1,200원도 안 해요. 이 가격에 제미나이 프로 쓸 수 있다는 게 믿기지 않을 정도입니다.</div>
+        <div class="review-item-tag">👨‍👩‍👧‍👦 가족 공유</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="chatgpt">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#10a37f,#0d7a5f)">한</div>
+          <div class="review-info"><div class="name">한O준</div><div class="plan">ChatGPT Plus 1개월권</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">자동결제 없어서 좋아요</div>
+        <div class="review-item-body">해외 카드 없어도 되고 자동결제 걱정 없이 쓸 수 있어서 너무 편해요. GPT-4o 무제한으로 쓸 수 있고 환율 걱정도 없어서 완전 만족합니다.</div>
+        <div class="review-item-tag">💳 간편 결제</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="canva">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#00C4CC,#0099AA)">서</div>
+          <div class="review-info"><div class="name">서O연</div><div class="plan">캔바 프로 6개월</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">디자인 작업 필수템</div>
+        <div class="review-item-body">회사에서 PPT 만들 때 캔바 프로 없으면 못 살아요. 정가보다 50% 저렴하게 살 수 있어서 너무 좋아요. 프리미엄 템플릿 퀄리티가 정말 높아요.</div>
+        <div class="review-item-tag">🎨 디자인</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+      <div class="review-item" data-cat="youtube">
+        <div class="review-item-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#FF0000,#990000)">임</div>
+          <div class="review-info"><div class="name">임O태</div><div class="plan">유튜브 프리미엄 12개월권</div></div>
+        </div>
+        <div class="review-item-stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-item-title">아이폰도 완벽하게 됩니다</div>
+        <div class="review-item-body">안드로이드만 되는 줄 알았는데 아이폰에서도 완벽하게 작동해요. 유튜브 앱에서도, 사파리에서도 광고 없이 잘 됩니다. 여기서 하길 잘했어요.</div>
+        <div class="review-item-tag">📱 iOS 완벽 지원</div>
+        <div class="review-verified">✓ 구매 인증 완료</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="cta-banner">
+    <h2>지금 바로 시작하세요!</h2>
+    <p>월 5,500원으로 광고 없는 유튜브를 경험하세요</p>
+    <a onclick="showPage('buy')" class="btn-cta">구매하러 가기 →</a>
+  </div>
   <footer><div class="footer-links"><a href="#">이용약관</a><a href="#">개인정보처리방침</a></div><strong>TTOTube</strong> | © 2025 TTOTube. All rights reserved.</footer>
 </div>
 
@@ -766,7 +996,13 @@ function updateStock(){
   if(dst) dst.textContent=stock;
 }
 
-function toggleNotice(id){
+function filterReview(el,cat){
+  document.querySelectorAll('.r-filter-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.review-item').forEach(item=>{
+    item.classList.toggle('hidden', cat!=='all' && item.dataset.cat!==cat);
+  });
+}
   const row=document.getElementById(id);
   const allRows=document.querySelectorAll('.notice-content-row');
   allRows.forEach(r=>{
