@@ -110,31 +110,41 @@ nav{background:#111;display:flex;align-items:center;justify-content:space-betwee
 .review-body{font-size:13px;color:#666;line-height:1.6;margin-bottom:30px;}
 .review-author{font-size:12px;color:#aaa;}
 
-/* BUY HERO */
-.buy-hero{background:linear-gradient(135deg,#1a1a1a,#0a0a0a);padding:50px 60px;color:#fff;}
-.buy-hero-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:30px;}
-.buy-badges{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-.buy-badge{border:1px solid #555;border-radius:20px;padding:5px 14px;font-size:12px;color:#ccc;}
-.buy-badge.green{border-color:#22cc44;color:#22cc44;}
-.buy-title{font-size:52px;font-weight:900;line-height:1.2;letter-spacing:-2px;}
-.buy-title span{color:#FF0000;}
-.buy-desc{font-size:14px;color:#aaa;margin-top:14px;line-height:1.7;}
-.buy-desc strong{color:#fff;}
-.buy-price-box{text-align:right;}
-.buy-price-label{font-size:13px;color:#aaa;margin-bottom:8px;}
-.buy-price-main{font-size:56px;font-weight:900;color:#fff;letter-spacing:-2px;}
-.buy-price-sub{font-size:14px;color:#888;margin-top:6px;}
+/* URGENCY BAR */
+.urgency-bar{background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:16px 28px;margin:0 0 30px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.urgency-left{display:flex;flex-direction:column;gap:6px;}
+.urgency-dot{display:flex;align-items:center;gap:8px;font-size:13px;color:#aaa;}
+.urgency-dot::before{content:'';width:8px;height:8px;background:#FF0000;border-radius:50%;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.urgency-title{font-size:18px;font-weight:900;color:#fff;}
+.urgency-title strong{color:#FF0000;}
+.urgency-right{display:flex;align-items:center;gap:16px;min-width:300px;}
+.urgency-right-label{font-size:12px;color:#aaa;margin-bottom:6px;}
+.progress-wrap{flex:1;}
+.progress-bar{width:100%;height:8px;background:#333;border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#FF0000,#ff6600);border-radius:4px;transition:width .5s;}
+.urgency-badge{background:#222;border:1px solid #444;border-radius:6px;padding:6px 12px;text-align:center;white-space:nowrap;}
+.urgency-badge .num{font-size:16px;font-weight:900;color:#fff;}
+.urgency-badge .label{font-size:10px;color:#FF0000;font-weight:700;}
 
-/* THUMB GRID */
+/* THUMB CARDS - 3D Style */
 .thumb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1100px;margin:0 auto 40px;}
-.thumb-card{background:#111;border-radius:16px;padding:24px 20px 20px;position:relative;cursor:pointer;transition:.2s;overflow:hidden;}
-.thumb-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(255,0,0,.2);}
-.thumb-hot{position:absolute;top:12px;left:12px;background:#FF0000;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;}
-.thumb-type{font-size:11px;color:#aaa;margin-bottom:6px;}
-.thumb-name{font-size:22px;font-weight:900;color:#fff;margin-bottom:16px;line-height:1.2;}
-.thumb-icon{font-size:56px;margin-bottom:8px;display:block;text-align:center;}
+.thumb-card{background:linear-gradient(145deg,#1e1e1e,#111);border-radius:20px;padding:24px 20px 20px;position:relative;cursor:pointer;transition:.3s;overflow:hidden;border:1px solid #2a2a2a;}
+.thumb-card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(255,0,0,.25);border-color:#FF0000;}
+.thumb-hot{position:absolute;top:14px;left:14px;background:#FF0000;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:5px;}
+.thumb-type{font-size:11px;color:#888;margin-bottom:4px;margin-top:8px;}
+.thumb-name{font-size:24px;font-weight:900;color:#fff;margin-bottom:16px;line-height:1.2;}
+.thumb-icon-wrap{position:relative;width:90px;height:90px;margin:0 auto 12px;}
+.yt-3d{width:80px;height:80px;background:linear-gradient(145deg,#fff,#f0f0f0);border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:4px 4px 12px rgba(0,0,0,.5),-2px -2px 6px rgba(255,255,255,.1);position:relative;}
+.yt-3d .play{width:36px;height:36px;background:#FF0000;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;padding-left:3px;}
+.headphones{position:absolute;bottom:-8px;left:-12px;font-size:28px;filter:drop-shadow(2px 2px 4px rgba(0,0,0,.5));}
+.play-badge{position:absolute;bottom:-4px;right:-4px;background:#222;border:2px solid #444;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;}
+.gemini-3d{width:80px;height:80px;background:linear-gradient(145deg,#1a1a2e,#16213e);border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:4px 4px 12px rgba(0,0,0,.5);position:relative;}
+.gemini-star{font-size:40px;filter:drop-shadow(0 0 10px rgba(100,150,255,.8));}
+.chatgpt-3d{width:80px;height:80px;background:linear-gradient(145deg,#1a2e2e,#0d2626);border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:4px 4px 12px rgba(0,0,0,.5);}
 .thumb-price{font-size:15px;font-weight:700;color:#FF0000;}
 .thumb-original{font-size:12px;color:#555;text-decoration:line-through;margin-left:6px;}
+
 
 /* NOTICE SECTION */
 .notice-section{background:linear-gradient(135deg,#1a1a1a,#0d0d0d);padding:80px 40px;text-align:center;color:#fff;}
@@ -353,11 +363,68 @@ footer strong{color:#888;}
     </div>
   </div>
   <div style="background:#000;padding:40px;">
+
+    <!-- 긴급 재고 바 -->
+    <div class="urgency-bar" style="max-width:1100px;margin:0 auto 30px;">
+      <div class="urgency-left">
+        <div class="urgency-dot" id="waiting-count">현재 44명 결제 대기 중</div>
+        <div class="urgency-title">유튜브 프리미엄 12개월 <strong>최저가 계약 마감</strong></div>
+      </div>
+      <div class="urgency-right">
+        <div class="progress-wrap">
+          <div class="urgency-right-label">실시간 잔여 수량</div>
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:85%"></div></div>
+        </div>
+        <div class="urgency-badge">
+          <div class="num" id="stock-num">잔여 6개</div>
+          <div class="label">마감 예정</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D 썸네일 카드 -->
     <div class="thumb-grid">
-      <div class="thumb-card"><div class="thumb-hot">HOT</div><div class="thumb-type">유튜브 프리미엄 + 뮤직</div><div class="thumb-name">12개월</div><span class="thumb-icon">▶️</span><div><span class="thumb-price">66,000원</span><span class="thumb-original">234,000원</span></div></div>
-      <div class="thumb-card"><div class="thumb-type">제미나이</div><div class="thumb-name">제미나이<br>프로</div><span class="thumb-icon">🤖</span><div><span class="thumb-price">129,000원</span><span class="thumb-original">3,132,000원</span></div></div>
-      <div class="thumb-card"><div class="thumb-type">유튜브 프리미엄 + 뮤직</div><div class="thumb-name">3개월</div><span class="thumb-icon">▶️</span><div><span class="thumb-price">27,000원</span><span class="thumb-original">58,500원</span></div></div>
-      <div class="thumb-card"><div class="thumb-type">ChatGPT</div><div class="thumb-name">챗 지피티<br>플러스</div><span class="thumb-icon">🤖</span><div><span class="thumb-price">19,000원</span><span class="thumb-original">28,000원</span></div></div>
+      <div class="thumb-card" onclick="updateStock()">
+        <div class="thumb-hot">HOT</div>
+        <div class="thumb-type">유튜브 프리미엄 + 뮤직</div>
+        <div class="thumb-name">12개월</div>
+        <div class="thumb-icon-wrap" style="width:100%;display:flex;justify-content:center;margin-bottom:14px;">
+          <div style="position:relative;width:90px;height:90px;">
+            <div class="yt-3d"><div class="play">▶</div></div>
+            <div class="headphones">🎧</div>
+            <div class="play-badge">▶</div>
+          </div>
+        </div>
+        <div><span class="thumb-price">66,000원</span><span class="thumb-original">234,000원</span></div>
+      </div>
+      <div class="thumb-card" onclick="updateStock()">
+        <div class="thumb-type">제미나이</div>
+        <div class="thumb-name">제미나이<br>프로</div>
+        <div style="display:flex;justify-content:center;margin-bottom:14px;">
+          <div class="gemini-3d"><div class="gemini-star">✦</div></div>
+        </div>
+        <div><span class="thumb-price">129,000원</span><span class="thumb-original">3,132,000원</span></div>
+      </div>
+      <div class="thumb-card" onclick="updateStock()">
+        <div class="thumb-type">유튜브 프리미엄 + 뮤직</div>
+        <div class="thumb-name">3개월</div>
+        <div class="thumb-icon-wrap" style="width:100%;display:flex;justify-content:center;margin-bottom:14px;">
+          <div style="position:relative;width:90px;height:90px;">
+            <div class="yt-3d"><div class="play">▶</div></div>
+            <div class="headphones">🎧</div>
+            <div class="play-badge">▶</div>
+          </div>
+        </div>
+        <div><span class="thumb-price">27,000원</span><span class="thumb-original">58,500원</span></div>
+      </div>
+      <div class="thumb-card" onclick="updateStock()">
+        <div class="thumb-type">ChatGPT</div>
+        <div class="thumb-name">챗 지피티<br>플러스</div>
+        <div style="display:flex;justify-content:center;margin-bottom:14px;">
+          <div class="chatgpt-3d" style="font-size:40px;">🤖</div>
+        </div>
+        <div><span class="thumb-price">19,000원</span><span class="thumb-original">28,000원</span></div>
+      </div>
     </div>
     <div class="products-grid" style="max-width:1100px;margin:0 auto;">
       <div class="card"><div class="card-badges"><span class="tag-sale">SALE</span><span class="tag-best">BEST</span></div><div class="card-icon">▶️</div><div class="card-type">유튜브</div><h3>프리미엄 + 뮤직 12개월권</h3><p class="card-sub">가장 많이 찾는 구성</p><div class="card-price">66,000원</div><div class="card-period">12개월 (월 5,500원)</div><div><span class="card-original">234,000원</span><span class="card-discount">-70%</span></div><ul class="card-features"><li>광고 없이 영상 시청</li><li>백그라운드 재생</li><li>오프라인 저장</li><li>유튜브 뮤직 포함</li></ul><div class="card-buyers">이번 달 <span>28</span>명 구매</div><a class="btn-buy" href="#">지금 구매하기 →</a></div>
@@ -475,7 +542,28 @@ function showPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   window.scrollTo(0,0);
+  if(name==='buy') updateStock();
 }
+
+// 잔여 수량 랜덤 업데이트
+function updateStock(){
+  const stocks=[3,4,5,6,7,8,9,10];
+  const waitings=[38,41,44,47,52,56,61];
+  const stock=stocks[Math.floor(Math.random()*stocks.length)];
+  const waiting=waitings[Math.floor(Math.random()*waitings.length)];
+  const fillPct=Math.min(95,Math.max(60,100-(stock*4)));
+  const el=document.getElementById('stock-num');
+  const pb=document.getElementById('progress-fill');
+  const wc=document.getElementById('waiting-count');
+  if(el) el.textContent='잔여 '+stock+'개';
+  if(pb) pb.style.width=fillPct+'%';
+  if(wc) wc.textContent='현재 '+waiting+'명 결제 대기 중';
+}
+
+// 3초마다 자동 업데이트
+setInterval(()=>{
+  if(document.getElementById('page-buy').classList.contains('active')) updateStock();
+},3000);
 function filterTab(el,cat){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
