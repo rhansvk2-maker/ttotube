@@ -228,9 +228,19 @@ nav{background:#111;display:flex;align-items:center;justify-content:space-betwee
 .notice-table td:first-child{text-align:center;color:#888;font-size:13px;}
 .notice-table td:nth-child(3){text-align:center;color:#888;font-size:13px;}
 .notice-table td:last-child{text-align:center;color:#888;font-size:13px;}
-.notice-table tr:hover td{background:#f8f8f8;cursor:pointer;}
+.notice-table tr.notice-row:hover td{background:#f8f8f8;cursor:pointer;}
+.notice-table tr.notice-row.open td{background:#f8f8f8;font-weight:700;}
 .notice-table td a{color:#111;text-decoration:none;}
 .notice-table td a:hover{color:#FF0000;}
+.notice-content-row{display:none;}
+.notice-content-row.open{display:table-row;}
+.notice-content-cell{padding:24px 40px !important;background:#fafafa !important;border-bottom:2px solid #FF0000 !important;font-size:14px;line-height:1.9;color:#444;}
+.notice-content-cell h3{font-size:18px;font-weight:900;color:#111;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #eee;}
+.notice-content-cell p{margin-bottom:12px;}
+.notice-content-cell ul{margin:12px 0 12px 20px;}
+.notice-content-cell ul li{margin-bottom:8px;}
+.notice-content-cell .notice-meta{font-size:12px;color:#aaa;margin-bottom:20px;}
+.notice-content-cell strong{color:#FF0000;}
 
 /* REVIEW PAGE */
 .review-hero{background:#111;padding:60px 40px;text-align:center;color:#fff;}
@@ -530,14 +540,141 @@ footer strong{color:#888;}
     <table class="notice-table">
       <thead><tr><th>No</th><th>제목</th><th>글쓴이</th><th>작성시간</th></tr></thead>
       <tbody>
-        <tr><td>📌</td><td><a href="#">제미나이 18개월권 추가인원 초대 방법</a></td><td>관리자</td><td>2026-03-29</td></tr>
-        <tr><td>📌</td><td><a href="#">서비스 이용약관 및 환불 규정 개정 안내 (2026.01.19 변경)</a></td><td>관리자</td><td>2026-01-19</td></tr>
-        <tr><td>6</td><td><a href="#">이용 약관 및 서비스 안내 사항 공지 (폐쇄)</a></td><td>관리자</td><td>2025-12-22</td></tr>
-        <tr><td>5</td><td><a href="#">유튜브 새로운 계정 만드는 법</a></td><td>관리자</td><td>2025-10-27</td></tr>
-        <tr><td>4</td><td><a href="#">유튜브 비밀번호 찾는 법</a></td><td>관리자</td><td>2025-10-27</td></tr>
-        <tr><td>3</td><td><a href="#">📢 카카오톡 비즈니스 채널 인증 완료 안내</a></td><td>관리자</td><td>2025-06-11</td></tr>
-        <tr><td>2</td><td><a href="#">구글 워크플레이스 계정은 사용 불가능 합니다.</a></td><td>관리자</td><td>2025-06-09</td></tr>
-        <tr><td>1</td><td><a href="#">홈페이지 리뉴얼 완료 안내</a></td><td>관리자</td><td>2025-06-05</td></tr>
+        <tr class="notice-row" onclick="toggleNotice('n1')">
+          <td>📌</td><td>제미나이 18개월권 추가인원 초대 방법</td><td>관리자</td><td>2026-03-29</td>
+        </tr>
+        <tr class="notice-content-row" id="n1">
+          <td colspan="4" class="notice-content-cell">
+            <h3>제미나이 18개월권 추가인원 초대 방법</h3>
+            <div class="notice-meta">관리자 · 2026-03-29</div>
+            <p>제미나이 프로 18개월 파티장 팩을 구매하신 고객님께서 추가인원을 초대하는 방법을 안내드립니다.</p>
+            <ul>
+              <li>구매 후 발송된 활성화 링크로 제미나이에 접속합니다.</li>
+              <li>설정 → 구독 → 멤버 관리 메뉴로 이동합니다.</li>
+              <li>초대할 인원의 구글 이메일 주소를 입력합니다.</li>
+              <li>최대 <strong>5명</strong>까지 추가 초대가 가능합니다.</li>
+            </ul>
+            <p>초대된 인원은 별도의 결제 없이 제미나이 프로를 사용할 수 있습니다.</p>
+            <p>문의사항은 카카오톡 채널로 연락주세요.</p>
+          </td>
+        </tr>
+        <tr class="notice-row" onclick="toggleNotice('n2')">
+          <td>📌</td><td>서비스 이용약관 및 환불 규정 개정 안내 (2026.01.19 변경)</td><td>관리자</td><td>2026-01-19</td>
+        </tr>
+        <tr class="notice-content-row" id="n2">
+          <td colspan="4" class="notice-content-cell">
+            <h3>서비스 이용약관 및 환불 규정 개정 안내</h3>
+            <div class="notice-meta">관리자 · 2026-01-19</div>
+            <p>2026년 1월 19일부로 서비스 이용약관 및 환불 규정이 개정되었습니다.</p>
+            <p><strong>주요 변경사항:</strong></p>
+            <ul>
+              <li>구독 활성화 후 7일 이내 환불 가능 (기존 3일 → 7일로 연장)</li>
+              <li>서비스 장애 발생 시 보상 규정 추가</li>
+              <li>개인정보 처리 방침 일부 내용 명확화</li>
+            </ul>
+            <p>자세한 내용은 이용약관 페이지를 확인해 주세요. 변경된 약관에 동의하지 않으실 경우 서비스 이용을 중단하시고 고객센터로 문의해 주시기 바랍니다.</p>
+          </td>
+        </tr>
+        <tr class="notice-row" onclick="toggleNotice('n3')">
+          <td>6</td><td>이용 약관 및 서비스 안내 사항 공지 (폐쇄)</td><td>관리자</td><td>2025-12-22</td>
+        </tr>
+        <tr class="notice-content-row" id="n3">
+          <td colspan="4" class="notice-content-cell">
+            <h3>이용 약관 및 서비스 안내 사항 공지</h3>
+            <div class="notice-meta">관리자 · 2025-12-22</div>
+            <p>기존 구버전 이용약관 페이지가 폐쇄되었습니다.</p>
+            <p>새로운 이용약관은 홈페이지 하단 <strong>이용약관</strong> 링크를 통해 확인하실 수 있습니다.</p>
+            <p>불편을 드려 죄송합니다. 문의사항은 카카오톡 채널로 연락 주세요.</p>
+          </td>
+        </tr>
+        <tr class="notice-row" onclick="toggleNotice('n4')">
+          <td>5</td><td>유튜브 새로운 계정 만드는 법</td><td>관리자</td><td>2025-10-27</td>
+        </tr>
+        <tr class="notice-content-row" id="n4">
+          <td colspan="4" class="notice-content-cell">
+            <h3>유튜브 새로운 계정 만드는 법</h3>
+            <div class="notice-meta">관리자 · 2025-10-27</div>
+            <p>TTOTube 서비스를 이용하기 위해 새 구글 계정이 필요하신 분들을 위한 안내입니다.</p>
+            <ul>
+              <li><strong>1단계:</strong> google.com 접속 → 로그인 → 계정 만들기 클릭</li>
+              <li><strong>2단계:</strong> 이름, 생년월일, 이메일 주소 입력</li>
+              <li><strong>3단계:</strong> 비밀번호 설정 (8자 이상)</li>
+              <li><strong>4단계:</strong> 전화번호 인증 완료</li>
+              <li><strong>5단계:</strong> 계정 생성 완료 후 TTOTube에서 구매 진행</li>
+            </ul>
+            <p>기존 계정도 그대로 사용 가능하며 새 계정 생성 없이도 서비스 이용이 가능합니다.</p>
+          </td>
+        </tr>
+        <tr class="notice-row" onclick="toggleNotice('n5')">
+          <td>4</td><td>유튜브 비밀번호 찾는 법</td><td>관리자</td><td>2025-10-27</td>
+        </tr>
+        <tr class="notice-content-row" id="n5">
+          <td colspan="4" class="notice-content-cell">
+            <h3>유튜브 비밀번호 찾는 법</h3>
+            <div class="notice-meta">관리자 · 2025-10-27</div>
+            <p>구글 계정 비밀번호를 잊으셨을 때 복구하는 방법입니다.</p>
+            <ul>
+              <li><strong>1단계:</strong> accounts.google.com 접속</li>
+              <li><strong>2단계:</strong> 이메일 입력 후 다음 클릭</li>
+              <li><strong>3단계:</strong> 비밀번호 찾기 클릭</li>
+              <li><strong>4단계:</strong> 복구 이메일 또는 전화번호로 인증 코드 수신</li>
+              <li><strong>5단계:</strong> 인증 완료 후 새 비밀번호 설정</li>
+            </ul>
+            <p>⚠️ TTOTube는 고객님의 비밀번호를 요구하지 않습니다. 비밀번호를 묻는 경우 사기에 주의하세요.</p>
+          </td>
+        </tr>
+        <tr class="notice-row" onclick="toggleNotice('n6')">
+          <td>3</td><td>📢 카카오톡 비즈니스 채널 인증 완료 안내</td><td>관리자</td><td>2025-06-11</td>
+        </tr>
+        <tr class="notice-content-row" id="n6">
+          <td colspan="4" class="notice-content-cell">
+            <h3>카카오톡 비즈니스 채널 인증 완료 안내</h3>
+            <div class="notice-meta">관리자 · 2025-06-11</div>
+            <p>TTOTube 카카오톡 채널이 <strong>비즈니스 채널 인증</strong>을 완료하였습니다.</p>
+            <p>이제 더욱 안전하고 신뢰할 수 있는 채널을 통해 고객 상담을 진행할 수 있습니다.</p>
+            <ul>
+              <li>인증된 채널 이름: <strong>TTOTube</strong></li>
+              <li>운영 시간: 평일 09:00 ~ 22:00</li>
+              <li>주말/공휴일: 10:00 ~ 18:00</li>
+            </ul>
+            <p>카카오톡에서 <strong>TTOTube</strong>를 검색하시면 공식 채널을 찾으실 수 있습니다.</p>
+          </td>
+        </tr>
+        <tr class="notice-row" onclick="toggleNotice('n7')">
+          <td>2</td><td>구글 워크플레이스 계정은 사용 불가능 합니다.</td><td>관리자</td><td>2025-06-09</td>
+        </tr>
+        <tr class="notice-content-row" id="n7">
+          <td colspan="4" class="notice-content-cell">
+            <h3>구글 워크플레이스 계정 사용 불가 안내</h3>
+            <div class="notice-meta">관리자 · 2025-06-09</div>
+            <p>⚠️ <strong>중요 안내사항</strong>입니다. 반드시 확인해 주세요.</p>
+            <p>구글 워크플레이스(Google Workspace) 계정, 즉 회사나 학교에서 발급받은 계정은 TTOTube 서비스 이용이 불가합니다.</p>
+            <ul>
+              <li>❌ 사용 불가: @회사명.com, @학교명.ac.kr 등 기관 발급 계정</li>
+              <li>✅ 사용 가능: @gmail.com 개인 계정</li>
+            </ul>
+            <p>워크플레이스 계정으로 구매하신 경우 서비스 적용이 불가하며, 이 경우 환불 처리가 어려울 수 있습니다.</p>
+            <p>구매 전 반드시 개인 gmail 계정인지 확인해 주세요.</p>
+          </td>
+        </tr>
+        <tr class="notice-row" onclick="toggleNotice('n8')">
+          <td>1</td><td>홈페이지 리뉴얼 완료 안내</td><td>관리자</td><td>2025-06-05</td>
+        </tr>
+        <tr class="notice-content-row" id="n8">
+          <td colspan="4" class="notice-content-cell">
+            <h3>홈페이지 리뉴얼 완료 안내</h3>
+            <div class="notice-meta">관리자 · 2025-06-05</div>
+            <p>TTOTube 홈페이지가 새롭게 리뉴얼되었습니다! 🎉</p>
+            <p><strong>주요 변경사항:</strong></p>
+            <ul>
+              <li>전체적인 디자인 개편으로 더욱 깔끔해졌습니다</li>
+              <li>구매 과정이 더욱 간편해졌습니다</li>
+              <li>고객센터 FAQ 페이지가 추가되었습니다</li>
+              <li>모바일 환경에서도 편리하게 이용 가능합니다</li>
+            </ul>
+            <p>앞으로도 더 나은 서비스를 제공하기 위해 최선을 다하겠습니다. 감사합니다.</p>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -629,10 +766,19 @@ function updateStock(){
   if(dst) dst.textContent=stock;
 }
 
-function toggleUrgency(){
-  const d=document.getElementById('urgency-detail');
-  if(d) d.classList.toggle('show');
-  updateStock();
+function toggleNotice(id){
+  const row=document.getElementById(id);
+  const allRows=document.querySelectorAll('.notice-content-row');
+  allRows.forEach(r=>{
+    if(r.id!==id) r.classList.remove('open');
+  });
+  document.querySelectorAll('.notice-row').forEach(r=>r.classList.remove('open'));
+  if(row){
+    row.classList.toggle('open');
+    if(row.classList.contains('open')){
+      row.previousElementSibling.classList.add('open');
+    }
+  }
 }
 
 setInterval(()=>{
