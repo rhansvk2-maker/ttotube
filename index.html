@@ -110,22 +110,44 @@ nav{background:#111;display:flex;align-items:center;justify-content:space-betwee
 .review-body{font-size:13px;color:#666;line-height:1.6;margin-bottom:30px;}
 .review-author{font-size:12px;color:#aaa;}
 
+/* BUY HERO */
+.buy-hero{background:linear-gradient(135deg,#0d0d0d 0%,#1a1a1a 50%,#0d0d0d 100%);padding:60px 60px;position:relative;overflow:hidden;}
+.buy-hero::before{content:'';position:absolute;right:-100px;top:-100px;width:400px;height:400px;background:radial-gradient(circle,#2a2a2a 0%,transparent 70%);border-radius:50%;}
+.buy-hero::after{content:'';position:absolute;right:50px;bottom:-50px;width:200px;height:200px;background:radial-gradient(circle,#222 0%,transparent 70%);border-radius:50%;}
+.buy-hero-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:40px;max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:40px;position:relative;z-index:1;}
+.buy-badges{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.buy-badge{border:1px solid #555;border-radius:20px;padding:6px 16px;font-size:13px;color:#ccc;background:rgba(255,255,255,.05);}
+.buy-badge.green{border-color:#22cc44;color:#22cc44;}
+.buy-title{font-size:56px;font-weight:900;line-height:1.15;letter-spacing:-2px;color:#fff;margin-bottom:20px;}
+.buy-title .dot{color:#FF0000;}
+.buy-desc{font-size:14px;color:#888;line-height:1.8;}
+.buy-desc strong{color:#fff;font-weight:700;}
+.buy-price-box{text-align:right;flex-shrink:0;}
+.buy-price-label{font-size:13px;color:#888;margin-bottom:10px;}
+.buy-price-main{font-size:58px;font-weight:900;color:#fff;letter-spacing:-2px;white-space:nowrap;}
+.buy-price-sub{font-size:14px;color:#666;margin-top:8px;}
+
 /* URGENCY BAR */
-.urgency-bar{background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:16px 28px;margin:0 0 30px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.urgency-bar{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:16px 24px;max-width:1100px;margin:20px auto 0;position:relative;z-index:1;cursor:pointer;}
+.urgency-top{display:flex;align-items:center;justify-content:space-between;gap:20px;}
 .urgency-left{display:flex;flex-direction:column;gap:6px;}
 .urgency-dot{display:flex;align-items:center;gap:8px;font-size:13px;color:#aaa;}
-.urgency-dot::before{content:'';width:8px;height:8px;background:#FF0000;border-radius:50%;animation:blink 1s infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
-.urgency-title{font-size:18px;font-weight:900;color:#fff;}
+.urgency-dot-icon{width:8px;height:8px;background:#FF0000;border-radius:50%;animation:blink 1s infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+.urgency-title{font-size:17px;font-weight:900;color:#fff;}
 .urgency-title strong{color:#FF0000;}
-.urgency-right{display:flex;align-items:center;gap:16px;min-width:300px;}
-.urgency-right-label{font-size:12px;color:#aaa;margin-bottom:6px;}
+.urgency-right{display:flex;align-items:center;gap:16px;min-width:320px;}
+.urgency-right-label{font-size:12px;color:#777;margin-bottom:6px;}
 .progress-wrap{flex:1;}
-.progress-bar{width:100%;height:8px;background:#333;border-radius:4px;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,#FF0000,#ff6600);border-radius:4px;transition:width .5s;}
-.urgency-badge{background:#222;border:1px solid #444;border-radius:6px;padding:6px 12px;text-align:center;white-space:nowrap;}
-.urgency-badge .num{font-size:16px;font-weight:900;color:#fff;}
-.urgency-badge .label{font-size:10px;color:#FF0000;font-weight:700;}
+.progress-bar{width:100%;height:8px;background:#2a2a2a;border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#FF0000,#ff5500);border-radius:4px;transition:width .8s ease;}
+.urgency-badge{background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:8px 14px;text-align:center;white-space:nowrap;}
+.urgency-badge .num{font-size:15px;font-weight:900;color:#fff;}
+.urgency-badge .label{font-size:10px;color:#FF0000;font-weight:700;margin-top:2px;}
+.urgency-detail{display:none;margin-top:14px;padding-top:14px;border-top:1px solid #2a2a2a;}
+.urgency-detail.show{display:block;}
+.urgency-detail-text{font-size:13px;color:#777;line-height:1.8;}
+.urgency-detail-text span{color:#FF0000;font-weight:700;}
 
 /* THUMB CARDS - 3D Style */
 .thumb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1100px;margin:0 auto 40px;}
@@ -353,13 +375,51 @@ footer strong{color:#888;}
 <!-- 구매하기 -->
 <div id="page-buy" class="page">
   <div class="buy-hero">
-    <div class="buy-hero-inner">
+    <div class="buy-hero-card">
       <div>
-        <div class="buy-badges"><span class="buy-badge green">✓ 무사고 0건</span><span class="buy-badge">국내 최저가</span><span class="buy-badge">비밀번호 NO</span></div>
-        <div class="buy-title">압도적 1위, 가장 완벽한<br>프리미엄<span>.</span></div>
-        <div class="buy-desc">찝찝한 계정 공유는 이제 그만!<br><strong>공식 활성화 링크</strong>로 안전하게, 내 계정 그대로 누리세요.</div>
+        <div class="buy-badges">
+          <span class="buy-badge green">✓ 무사고 0건</span>
+          <span class="buy-badge">국내 최저가</span>
+          <span class="buy-badge">비밀번호 NO</span>
+        </div>
+        <div class="buy-title">압도적 1위, 가장 완벽한<br>프리미엄<span class="dot">.</span></div>
+        <div class="buy-desc">
+          찝찝한 계정 공유는 이제 그만!<br>
+          <strong>공식 활성화 링크</strong>로 안전하게, <strong>내 계정 그대로</strong> 누리세요.
+        </div>
       </div>
-      <div class="buy-price-box"><div class="buy-price-label">매달 1만 원을 아끼는 현명한 선택</div><div class="buy-price-main">월 5,500원</div><div class="buy-price-sub">(1년 66,000원 / 일시불)</div></div>
+      <div class="buy-price-box">
+        <div class="buy-price-label">매달 1만 원을 아끼는 현명한 선택</div>
+        <div class="buy-price-main">월 5,500원</div>
+        <div class="buy-price-sub">(1년 66,000원 / 일시불)</div>
+      </div>
+    </div>
+
+    <!-- 긴급 재고 바 -->
+    <div class="urgency-bar" onclick="toggleUrgency()">
+      <div class="urgency-top">
+        <div class="urgency-left">
+          <div class="urgency-dot"><div class="urgency-dot-icon"></div><span id="waiting-count">현재 45명 결제 대기 중</span></div>
+          <div class="urgency-title">유튜브 프리미엄 12개월 <strong>최저가 계약 마감</strong></div>
+        </div>
+        <div class="urgency-right">
+          <div class="progress-wrap">
+            <div class="urgency-right-label">실시간 잔여 수량</div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:85%"></div></div>
+          </div>
+          <div class="urgency-badge">
+            <div class="num" id="stock-num">잔여 6개</div>
+            <div class="label">마감 예정</div>
+          </div>
+        </div>
+      </div>
+      <div class="urgency-detail" id="urgency-detail">
+        <div class="urgency-detail-text">
+          ⚡ 현재 <span id="detail-waiting">45</span>명이 동시에 구매를 진행 중입니다.<br>
+          ⏰ 잔여 수량이 <span id="detail-stock">6</span>개 남았습니다. 지금 바로 구매하지 않으면 품절될 수 있습니다.<br>
+          🔥 최근 24시간 내 <span>128명</span>이 구매를 완료했습니다.
+        </div>
+      </div>
     </div>
   </div>
   <div style="background:#000;padding:40px;">
@@ -545,22 +605,36 @@ function showPage(name){
   if(name==='buy') updateStock();
 }
 
-// 잔여 수량 랜덤 업데이트
 function updateStock(){
   const stocks=[3,4,5,6,7,8,9,10];
-  const waitings=[38,41,44,47,52,56,61];
+  const waitings=[38,41,44,45,47,52,56,61];
   const stock=stocks[Math.floor(Math.random()*stocks.length)];
   const waiting=waitings[Math.floor(Math.random()*waitings.length)];
   const fillPct=Math.min(95,Math.max(60,100-(stock*4)));
-  const el=document.getElementById('stock-num');
-  const pb=document.getElementById('progress-fill');
-  const wc=document.getElementById('waiting-count');
-  if(el) el.textContent='잔여 '+stock+'개';
-  if(pb) pb.style.width=fillPct+'%';
-  if(wc) wc.textContent='현재 '+waiting+'명 결제 대기 중';
+  ['stock-num','stock-num2'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent='잔여 '+stock+'개';
+  });
+  ['progress-fill','progress-fill2'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.width=fillPct+'%';
+  });
+  ['waiting-count','waiting-count2'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent='현재 '+waiting+'명 결제 대기 중';
+  });
+  const ds=document.getElementById('detail-waiting');
+  const dst=document.getElementById('detail-stock');
+  if(ds) ds.textContent=waiting;
+  if(dst) dst.textContent=stock;
 }
 
-// 3초마다 자동 업데이트
+function toggleUrgency(){
+  const d=document.getElementById('urgency-detail');
+  if(d) d.classList.toggle('show');
+  updateStock();
+}
+
 setInterval(()=>{
   if(document.getElementById('page-buy').classList.contains('active')) updateStock();
 },3000);
