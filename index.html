@@ -73,6 +73,47 @@ nav{background:#111;display:flex;align-items:center;justify-content:space-betwee
 .btn-buy:hover{background:#FF0000;}
 .btn-soldout{background:#ccc!important;cursor:not-allowed;}
 
+/* BUY PAGE */
+.buy-hero{background:linear-gradient(135deg,#1a1a1a 0%,#0a0a0a 100%);padding:50px 40px;color:#fff;}
+.buy-hero-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:30px;}
+.buy-badges{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.buy-badge{border:1px solid #555;border-radius:20px;padding:5px 14px;font-size:12px;color:#ccc;}
+.buy-badge.green{border-color:#22cc44;color:#22cc44;}
+.buy-title{font-size:52px;font-weight:900;line-height:1.2;letter-spacing:-2px;}
+.buy-title span{color:#FF0000;}
+.buy-desc{font-size:14px;color:#aaa;margin-top:14px;line-height:1.7;}
+.buy-desc strong{color:#fff;}
+.buy-price-box{text-align:right;}
+.buy-price-label{font-size:13px;color:#aaa;margin-bottom:8px;}
+.buy-price-main{font-size:56px;font-weight:900;color:#fff;letter-spacing:-2px;}
+.buy-price-sub{font-size:14px;color:#888;margin-top:6px;}
+
+/* 상품 썸네일 카드 */
+.thumb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1100px;margin:0 auto 40px;}
+.thumb-card{background:#111;border-radius:16px;padding:24px 20px 20px;position:relative;cursor:pointer;transition:.2s;overflow:hidden;}
+.thumb-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(255,0,0,.2);}
+.thumb-hot{position:absolute;top:12px;left:12px;background:#FF0000;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;}
+.thumb-type{font-size:11px;color:#aaa;margin-bottom:6px;}
+.thumb-name{font-size:22px;font-weight:900;color:#fff;margin-bottom:16px;line-height:1.2;}
+.thumb-icon{font-size:56px;margin-bottom:8px;display:block;text-align:center;}
+.thumb-price{font-size:15px;font-weight:700;color:#FF0000;}
+.thumb-original{font-size:12px;color:#555;text-decoration:line-through;margin-left:6px;}
+
+/* 중요 안내 섹션 */
+.notice-section{background:linear-gradient(135deg,#1a1a1a,#0d0d0d);padding:80px 40px;text-align:center;color:#fff;}
+.notice-section h2{font-size:28px;font-weight:900;margin-bottom:30px;}
+.notice-btn{background:#FF0000;color:#fff;border:none;padding:16px 40px;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:24px;display:inline-block;text-decoration:none;}
+.notice-links{display:flex;gap:30px;justify-content:center;}
+.notice-links a{color:#888;text-decoration:none;font-size:14px;cursor:pointer;}
+.notice-links a:hover{color:#fff;}
+
+/* 공지사항 목록 */
+.notice-list{max-width:800px;margin:0 auto;padding:60px 40px;}
+.notice-item{border-bottom:1px solid #eee;padding:20px 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.notice-item:hover{background:#f8f8f8;padding:20px 10px;}
+.notice-item-title{font-size:15px;font-weight:500;color:#111;}
+.notice-item-date{font-size:13px;color:#999;}
+
 /* WHY */
 .why{background:#fff;padding:70px 40px;text-align:center;}
 .why h2{font-size:34px;font-weight:900;margin-bottom:10px;}
@@ -186,6 +227,7 @@ footer strong{color:#888;}
     <li><a onclick="showPage('buy')">구매하기</a></li>
     <li><a onclick="showPage('review')">전체리뷰</a></li>
     <li><a onclick="showPage('faq')">고객센터</a></li>
+    <li><a onclick="showPage('notice')">공지사항</a></li>
   </ul>
   <div class="nav-right">
     <button class="btn-login">로그인</button>
@@ -431,12 +473,59 @@ footer strong{color:#888;}
 
 <!-- ===== 구매하기 페이지 ===== -->
 <div id="page-buy" class="page">
-  <div style="background:#111;padding:60px 40px;text-align:center;color:#fff;">
-    <h1 style="font-size:40px;font-weight:900;margin-bottom:10px;">구매하기</h1>
-    <p style="color:#aaa;">원하시는 상품을 선택해 주세요</p>
+
+  <!-- 히어로 배너 -->
+  <div class="buy-hero">
+    <div class="buy-hero-inner">
+      <div>
+        <div class="buy-badges">
+          <span class="buy-badge green">✓ 무사고 0건</span>
+          <span class="buy-badge">국내 최저가</span>
+          <span class="buy-badge">비밀번호 NO</span>
+        </div>
+        <div class="buy-title">압도적 1위, 가장 완벽한<br>프리미엄<span>.</span></div>
+        <div class="buy-desc">찝찝한 계정 공유는 이제 그만!<br><strong>공식 활성화 링크</strong>로 안전하게, 내 계정 그대로 누리세요.</div>
+      </div>
+      <div class="buy-price-box">
+        <div class="buy-price-label">매달 1만 원을 아끼는 현명한 선택</div>
+        <div class="buy-price-main">월 5,500원</div>
+        <div class="buy-price-sub">(1년 66,000원 / 일시불)</div>
+      </div>
+    </div>
   </div>
-  <div class="products" style="padding:60px 40px;">
-    <div class="products-grid">
+
+  <!-- 썸네일 상품 그리드 -->
+  <div style="background:#000;padding:40px;">
+    <div class="thumb-grid">
+      <div class="thumb-card">
+        <div class="thumb-hot">HOT</div>
+        <div class="thumb-type">유튜브 프리미엄 + 뮤직</div>
+        <div class="thumb-name">12개월</div>
+        <span class="thumb-icon">▶️</span>
+        <div><span class="thumb-price">66,000원</span><span class="thumb-original">234,000원</span></div>
+      </div>
+      <div class="thumb-card">
+        <div class="thumb-type">제미나이</div>
+        <div class="thumb-name">제미나이<br>프로</div>
+        <span class="thumb-icon">🤖</span>
+        <div><span class="thumb-price">129,000원</span><span class="thumb-original">3,132,000원</span></div>
+      </div>
+      <div class="thumb-card">
+        <div class="thumb-type">유튜브 프리미엄 + 뮤직</div>
+        <div class="thumb-name">3개월</div>
+        <span class="thumb-icon">▶️</span>
+        <div><span class="thumb-price">27,000원</span><span class="thumb-original">58,500원</span></div>
+      </div>
+      <div class="thumb-card">
+        <div class="thumb-type">ChatGPT</div>
+        <div class="thumb-name">챗 지피티<br>플러스</div>
+        <span class="thumb-icon">🤖</span>
+        <div><span class="thumb-price">19,000원</span><span class="thumb-original">28,000원</span></div>
+      </div>
+    </div>
+
+    <!-- 상세 카드 -->
+    <div class="products-grid" style="max-width:1100px;margin:0 auto;">
       <div class="card">
         <div class="card-badges"><span class="tag-sale">SALE</span><span class="tag-best">BEST</span></div>
         <div class="card-icon">▶️</div>
@@ -516,6 +605,44 @@ footer strong{color:#888;}
         <button class="btn-buy btn-soldout">일시 품절</button>
       </div>
     </div>
+  </div>
+
+  <!-- 중요 안내사항 -->
+  <div class="notice-section">
+    <h2>중요한 내용을 확인해 보세요</h2>
+    <a onclick="showPage('notice')" class="notice-btn">중요 안내사항 바로가기</a>
+    <div class="notice-links">
+      <a onclick="showPage('notice')">공지 사항</a>
+      <span style="color:#555">|</span>
+      <a onclick="showPage('faq')">자주묻는 질문</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links"><a href="#">이용약관</a><a href="#">개인정보처리방침</a></div>
+    <strong>TTOTube</strong> | © 2025 TTOTube. All rights reserved.
+  </footer>
+</div>
+
+<!-- ===== 공지사항 페이지 ===== -->
+<div id="page-notice" class="page">
+  <div class="faq-hero">
+    <h1>공지 사항</h1>
+    <p>TTOTube의 중요한 내용을 안내합니다</p>
+  </div>
+  <div class="notice-list">
+    <div class="faq-tabs">
+      <div class="faq-tab active" onclick="showPage('notice')">공지 사항</div>
+      <div class="faq-tab" onclick="showPage('faq')">자주 묻는 질문</div>
+    </div>
+    <div class="notice-item"><div class="notice-item-title">📢 제미나이 18개월권 추가인원 초대 방법</div><div class="notice-item-date">2026-03-29</div></div>
+    <div class="notice-item"><div class="notice-item-title">📢 서비스 이용약관 및 환불 규정 개정 안내 (2026.01.19 변경)</div><div class="notice-item-date">2026-01-19</div></div>
+    <div class="notice-item"><div class="notice-item-title">📢 이용 약관 및 서비스 안내 사항 공지</div><div class="notice-item-date">2025-12-22</div></div>
+    <div class="notice-item"><div class="notice-item-title">📢 유튜브 새로운 계정 만드는 법</div><div class="notice-item-date">2025-10-27</div></div>
+    <div class="notice-item"><div class="notice-item-title">📢 유튜브 비밀번호 찾는 법</div><div class="notice-item-date">2025-10-27</div></div>
+    <div class="notice-item"><div class="notice-item-title">📢 카카오톡 비즈니스 채널 인증 완료 안내</div><div class="notice-item-date">2025-06-11</div></div>
+    <div class="notice-item"><div class="notice-item-title">📢 구글 워크플레이스 계정은 사용 불가능 합니다.</div><div class="notice-item-date">2025-06-09</div></div>
+    <div class="notice-item"><div class="notice-item-title">📢 홈페이지 리뉴얼 완료 안내</div><div class="notice-item-date">2025-06-05</div></div>
   </div>
   <footer>
     <div class="footer-links"><a href="#">이용약관</a><a href="#">개인정보처리방침</a></div>
