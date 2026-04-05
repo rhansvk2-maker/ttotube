@@ -1,145 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTOTube - YouTube Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-.hero-wrap {
-  background: #000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 60px 20px 50px;
-  font-family: 'Noto Sans KR', sans-serif;
-}
-.yt-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-.yt-icon {
-  width: 40px;
-  height: 28px;
-  background: #FF0000;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 14px;
-  padding-left: 3px;
-}
-.yt-text {
-  font-size: 22px;
-  font-weight: 700;
-  color: #fff;
-}
-.hero-title {
-  font-size: 58px;
-  font-weight: 900;
-  line-height: 1.2;
-  color: #fff;
-  margin-bottom: 20px;
-  letter-spacing: -1px;
-}
-.hero-desc {
-  font-size: 15px;
-  color: #ccc;
-  line-height: 1.8;
-  margin-bottom: 24px;
-}
-.hero-desc strong {
-  color: #fff;
-  font-weight: 700;
-}
-.badges {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 32px;
-}
-.badge {
-  background: #1a1a1a;
-  border: 1px solid #444;
-  border-radius: 20px;
-  padding: 8px 16px;
-  font-size: 13px;
-  color: #fff;
-}
-.price-top {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-.discount-badge {
-  background: #CC0000;
-  color: #fff;
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 3px;
-  font-weight: 700;
-}
-.original-price {
-  color: #888;
-  font-size: 14px;
-  text-decoration: line-through;
-}
-.price-main {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 4px;
-  margin-bottom: 20px;
-}
-.price-num {
-  font-size: 72px;
-  font-weight: 900;
-  color: #fff;
-  letter-spacing: -2px;
-}
-.price-unit {
-  font-size: 22px;
-  color: #fff;
-}
-.red-line {
-  width: 60px;
-  height: 4px;
-  background: #FF0000;
-  border-radius: 2px;
-  margin: 0 auto;
-}
-</style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans KR',sans-serif;background:#fff;color:#fff;}
 
-<div class="hero-wrap">
+/* NAV */
+nav{background:#111;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:60px;position:sticky;top:0;z-index:100;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo span{color:#fff;font-size:18px;font-weight:700;}
+.nav-links{display:flex;gap:30px;list-style:none;}
+.nav-links a{color:#ccc;text-decoration:none;font-size:14px;}
+.nav-links a:hover{color:#fff;}
+.nav-right{display:flex;gap:12px;}
+.btn-login{background:transparent;border:1px solid #555;color:#ccc;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:13px;}
+.btn-signup{background:#FF0000;border:none;color:#fff;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:13px;font-weight:700;}
+
+/* HERO */
+.hero{background:#000;text-align:center;padding:70px 20px 0;}
+.yt-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px;}
+.yt-icon{width:44px;height:30px;background:#FF0000;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;padding-left:3px;}
+.yt-label{font-size:24px;font-weight:700;color:#fff;}
+.hero h1{font-size:60px;font-weight:900;line-height:1.2;color:#fff;margin-bottom:22px;letter-spacing:-2px;}
+.hero-desc{font-size:15px;color:#aaa;line-height:1.9;margin-bottom:26px;}
+.hero-desc strong{color:#fff;font-weight:700;}
+.badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:34px;}
+.badge{background:#1a1a1a;border:1px solid #444;border-radius:20px;padding:8px 18px;font-size:13px;color:#ddd;}
+.price-area{margin-bottom:30px;}
+.price-top{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;}
+.discount{background:#CC0000;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:3px;}
+.original{color:#666;font-size:15px;text-decoration:line-through;}
+.price-main{display:flex;align-items:baseline;justify-content:center;gap:6px;}
+.price-num{font-size:76px;font-weight:900;color:#fff;letter-spacing:-3px;}
+.price-unit{font-size:22px;color:#fff;}
+.red-bar{width:60px;height:4px;background:#FF0000;border-radius:2px;margin:0 auto 0;}
+
+/* TABS */
+.tabs-wrap{background:#fff;padding:30px 20px;}
+.tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.tab{background:#fff;border:1.5px solid #222;border-radius:30px;padding:10px 22px;font-size:13px;color:#222;cursor:pointer;font-weight:500;transition:all .2s;}
+.tab:hover,.tab.active{background:#222;color:#fff;}
+
+/* PRODUCTS */
+.products{background:#f8f8f8;padding:50px 40px;}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;max-width:1100px;margin:0 auto;}
+.card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.08);color:#111;position:relative;}
+.card-badges{display:flex;gap:6px;margin-bottom:14px;}
+.tag-sale{background:#FF0000;color:#fff;font-size:10px;font-weight:700;padding:3px 7px;border-radius:4px;}
+.tag-best{background:#111;color:#fff;font-size:10px;font-weight:700;padding:3px 7px;border-radius:4px;}
+.tag-hot{background:#FF6600;color:#fff;font-size:10px;font-weight:700;padding:3px 7px;border-radius:4px;}
+.tag-soldout{background:#999;color:#fff;font-size:10px;font-weight:700;padding:3px 7px;border-radius:4px;}
+.card-icon{font-size:32px;margin-bottom:10px;}
+.card-type{font-size:12px;color:#999;margin-bottom:4px;}
+.card h3{font-size:17px;font-weight:700;margin-bottom:6px;color:#111;}
+.card-sub{font-size:12px;color:#888;margin-bottom:16px;border-bottom:1px solid #f0f0f0;padding-bottom:16px;}
+.card-price-wrap{margin-bottom:16px;}
+.card-price{font-size:28px;font-weight:900;color:#111;}
+.card-period{font-size:13px;color:#777;margin-bottom:4px;}
+.card-original{font-size:13px;color:#bbb;text-decoration:line-through;}
+.card-discount{color:#FF0000;font-size:13px;font-weight:700;margin-left:6px;}
+.card-features{list-style:none;margin-bottom:20px;}
+.card-features li{font-size:13px;color:#555;padding:4px 0;}
+.card-features li::before{content:"✓ ";color:#22cc44;}
+.card-buyers{font-size:12px;color:#999;margin-bottom:16px;}
+.card-buyers span{color:#FF0000;font-weight:700;}
+.btn-buy{display:block;width:100%;background:#111;color:#fff;border:none;padding:14px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;}
+.btn-buy:hover{background:#333;}
+.btn-soldout{background:#ccc;cursor:not-allowed;}
+
+/* WHY */
+.why{background:#fff;padding:70px 40px;text-align:center;color:#111;}
+.why h2{font-size:36px;font-weight:900;margin-bottom:14px;}
+.why h2 strong{color:#FF0000;}
+.why-grid{display:flex;gap:30px;justify-content:center;flex-wrap:wrap;margin-top:50px;}
+.why-card{background:#f8f8f8;border-radius:16px;padding:30px 24px;width:220px;text-align:center;}
+.why-icon{font-size:40px;margin-bottom:14px;}
+.why-title{font-size:15px;font-weight:700;color:#111;margin-bottom:6px;}
+.why-desc{font-size:13px;color:#777;line-height:1.6;}
+
+/* CHAT */
+.chat-section{background:#111;padding:70px 40px;text-align:center;}
+.chat-section h2{font-size:34px;font-weight:900;margin-bottom:10px;}
+.chat-sub{font-size:15px;color:#aaa;margin-bottom:40px;}
+.chat-box{background:#fff;border-radius:20px;max-width:380px;margin:0 auto;overflow:hidden;color:#111;}
+.chat-header{background:#FF0000;padding:14px 20px;display:flex;align-items:center;gap:10px;}
+.chat-header span{color:#fff;font-size:14px;font-weight:700;}
+.chat-body{padding:20px;display:flex;flex-direction:column;gap:14px;}
+.msg-user{align-self:flex-end;background:#111;color:#fff;padding:10px 14px;border-radius:12px 12px 0 12px;font-size:13px;max-width:80%;}
+.msg-bot{align-self:flex-start;background:#f5f5f5;color:#111;padding:10px 14px;border-radius:12px 12px 12px 0;font-size:13px;max-width:80%;line-height:1.6;}
+.chat-cta{background:#f8f8f8;padding:16px 20px;font-size:13px;color:#555;border-top:1px solid #eee;}
+.chat-cta strong{color:#111;}
+
+/* REVIEWS */
+.reviews{background:#f8f8f8;padding:70px 0;text-align:center;color:#111;}
+.reviews h2{font-size:34px;font-weight:900;margin-bottom:10px;}
+.reviews-sub{font-size:15px;color:#777;margin-bottom:40px;}
+.slider-wrap{overflow:hidden;width:100%;position:relative;}
+.slider-track{display:flex;gap:20px;width:max-content;animation:slide 30s linear infinite;}
+.slider-track:hover{animation-play-state:paused;}
+@keyframes slide{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
+}
+.review-card{background:#fff;border:2px solid #FF0000;border-radius:14px;padding:24px;text-align:left;width:280px;flex-shrink:0;}
+.stars{color:#FFB800;font-size:14px;margin-bottom:10px;}
+.review-title{font-size:15px;font-weight:700;margin-bottom:8px;color:#111;}
+.review-body{font-size:13px;color:#666;line-height:1.6;margin-bottom:40px;}
+.review-author{font-size:12px;color:#aaa;}
+
+/* FOOTER */
+footer{background:#111;padding:40px;color:#666;font-size:12px;line-height:2;}
+footer strong{color:#999;}
+
+/* FLOAT */
+.float-btn{position:fixed;bottom:30px;right:30px;background:#FEE500;color:#111;font-size:13px;font-weight:700;padding:12px 18px;border-radius:30px;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.3);z-index:999;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <span>TTOTube</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">서비스</a></li>
+    <li><a href="#">구매하기</a></li>
+    <li><a href="#">전체리뷰</a></li>
+    <li><a href="#">고객센터</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="btn-login">로그인</button>
+    <button class="btn-signup">회원가입</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
   <div class="yt-logo">
     <div class="yt-icon">▶</div>
-    <span class="yt-text">YouTube Premium</span>
+    <span class="yt-label">YouTube Premium</span>
   </div>
-
-  <div class="hero-title">
-    단 1분이면 완성되는<br>가장 확실한 12개월.
-  </div>
-
-  <div class="hero-desc">
+  <h1>단 1분이면 완성되는<br>가장 확실한 12개월.</h1>
+  <p class="hero-desc">
     광고 없이 온전히 집중하는 나만의 든든한 시간.<br>
     <strong>공식 활성화 링크</strong>를 통해 쓰던 계정 그대로 편안하게 누리세요.
-  </div>
-
+  </p>
   <div class="badges">
     <span class="badge">✓ 압도적 가성비</span>
     <span class="badge">× 복잡한 가족 초대 NO</span>
     <span class="badge">♟ 내 계정 그대로 적용</span>
   </div>
-
-  <div class="price-top">
-    <span class="discount-badge">71%절약</span>
-    <span class="original-price">234,000원</span>
+  <div class="price-area">
+    <div class="price-top">
+      <span class="discount">71%절약</span>
+      <span class="original">234,000원</span>
+    </div>
+    <div class="price-main">
+      <span class="price-num">66,000</span>
+      <span class="price-unit">원 / 12개월</span>
+    </div>
   </div>
-
-  <div class="price-main">
-    <span class="price-num">66,000</span>
-    <span class="price-unit">원 / 12개월</span>
-  </div>
-
-  <div class="red-line"></div>
+  <div class="red-bar"></div>
 </div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active">⊞ 전체보기</button>
+    <button class="tab">▶ 영상</button>
+    <button class="tab">♫ 음악</button>
+    <button class="tab">✦ AI 툴</button>
+    <button class="tab">◫ 소프트웨어</button>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<div class="products">
+  <div class="products-grid">
+    <div class="card">
+      <div class="card-badges"><span class="tag-sale">SALE</span><span class="tag-best">BEST</span></div>
+      <div class="card-icon">▶️</div>
+      <div class="card-type">유튜브</div>
+      <h3>프리미엄 + 뮤직 12개월권</h3>
+      <p class="card-sub">가장 많이 찾는 구성</p>
+      <div class="card-price-wrap">
+        <div class="card-price">66,000원</div>
+        <div class="card-period">12개월</div>
+        <div><span class="card-original">234,000원</span><span class="card-discount">-70%</span></div>
+      </div>
+      <ul class="card-features">
+        <li>광고 없이 영상 시청</li>
+        <li>백그라운드 재생</li>
+        <li>오프라인 저장</li>
+        <li>모든 기능 포함</li>
+      </ul>
+      <div class="card-buyers">이번 달 <span>28</span>명 구매</div>
+      <a class="btn-buy" href="#">지금 구매하기 →</a>
+    </div>
+    <div class="card">
+      <div class="card-badges"><span class="tag-best">BEST</span><span class="tag-hot">HOT</span></div>
+      <div class="card-icon">🤖</div>
+      <div class="card-type">제미나이</div>
+      <h3>프로 18개월 파티장 팩</h3>
+      <p class="card-sub">최대 6인 공유</p>
+      <div class="card-price-wrap">
+        <div class="card-price">129,000원</div>
+        <div class="card-period">18개월</div>
+        <div><span class="card-original">3,132,000원</span><span class="card-discount">-95%</span></div>
+      </div>
+      <ul class="card-features">
+        <li>내 Google 계정에 직접 적용</li>
+        <li>Gemini 3.1 Pro 무제한</li>
+        <li>2TB 클라우드 포함</li>
+        <li>가족/지인 최대 5명 무료초대</li>
+      </ul>
+      <div class="card-buyers">이번 달 <span>15</span>명 구매</div>
+      <a class="btn-buy" href="#">상세보기 →</a>
+    </div>
+    <div class="card">
+      <div class="card-badges"><span class="tag-sale">SALE</span></div>
+      <div class="card-icon">▶️</div>
+      <div class="card-type">유튜브</div>
+      <h3>프리미엄 + 뮤직 3개월권</h3>
+      <p class="card-sub">단기 이용 추천</p>
+      <div class="card-price-wrap">
+        <div class="card-price">27,000원</div>
+        <div class="card-period">3개월</div>
+        <div><span class="card-original">58,500원</span><span class="card-discount">-54%</span></div>
+      </div>
+      <ul class="card-features">
+        <li>광고 없이 영상 시청</li>
+        <li>백그라운드 재생</li>
+        <li>오프라인 저장</li>
+        <li>모든 기능 포함</li>
+      </ul>
+      <div class="card-buyers">이번 달 <span>9</span>명 구매</div>
+      <a class="btn-buy" href="#">지금 구매하기 →</a>
+    </div>
+    <div class="card">
+      <div class="card-badges"><span class="tag-best">BEST</span></div>
+      <div class="card-icon">🤖</div>
+      <div class="card-type">ChatGPT</div>
+      <h3>Plus 1개월권</h3>
+      <p class="card-sub">자동결제 없는 수기 갱신 패키지</p>
+      <div class="card-price-wrap">
+        <div class="card-price">19,000원</div>
+        <div class="card-period">1개월</div>
+        <div><span class="card-original">약 28,000원</span><span class="card-discount">-32%</span></div>
+      </div>
+      <ul class="card-features">
+        <li>자동 결제 없는 수동 연장</li>
+        <li>환율 영향 없는 고정 원화</li>
+        <li>GPT-4o, DALL-E 3 무제한</li>
+        <li>기존 대화 기록 100% 유지</li>
+      </ul>
+      <div class="card-buyers">이번 달 <span>21</span>명 구매</div>
+      <a class="btn-buy" href="#">상세보기 →</a>
+    </div>
+    <div class="card">
+      <div class="card-badges"><span class="tag-sale">SALE</span></div>
+      <div class="card-icon">🎨</div>
+      <div class="card-type">캔바</div>
+      <h3>프로 6개월</h3>
+      <p class="card-sub">디자인 작업 필수 구독</p>
+      <div class="card-price-wrap">
+        <div class="card-price">29,900원</div>
+        <div class="card-period">6개월</div>
+        <div><span class="card-original">59,400원</span><span class="card-discount">-50%</span></div>
+      </div>
+      <ul class="card-features">
+        <li>프로 템플릿 무제한</li>
+        <li>무제한 디자인 요소</li>
+        <li>팀 라이브러리</li>
+        <li>모든 기능 포함</li>
+      </ul>
+      <div class="card-buyers">이번 달 <span>7</span>명 구매</div>
+      <a class="btn-buy" href="#">지금 구매하기 →</a>
+    </div>
+    <div class="card">
+      <div class="card-badges"><span class="tag-sale">SALE</span><span class="tag-soldout">SOLDOUT</span></div>
+      <div class="card-icon">🎵</div>
+      <div class="card-type">스포티파이</div>
+      <h3>프리미엄 12개월권</h3>
+      <p class="card-sub">결제대행</p>
+      <div class="card-price-wrap">
+        <div class="card-price">59,800원</div>
+        <div class="card-period">12개월</div>
+        <div><span class="card-original">130,800원</span><span class="card-discount">-54%</span></div>
+      </div>
+      <ul class="card-features">
+        <li>광고 없이 음악 청취</li>
+        <li>고음질 스트리밍</li>
+        <li>오프라인 재생</li>
+        <li>모든 기능 포함</li>
+      </ul>
+      <div class="card-buyers">현재 품절</div>
+      <button class="btn-buy btn-soldout">일시 품절</button>
+    </div>
+  </div>
+</div>
+
+<!-- WHY -->
+<div class="why">
+  <h2><strong>고튜브</strong>를 선택하는 이유</h2>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">🔒</div>
+      <div class="why-title">비밀번호 공유 X</div>
+      <div class="why-desc">개인정보 100% 안전하게 보호됩니다</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">⚡</div>
+      <div class="why-title">당일 순차 발송</div>
+      <div class="why-desc">결제 확인 후 꼼꼼하게 처리해드려요</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">⭐</div>
+      <div class="why-title">4.9점 만족도</div>
+      <div class="why-desc">재구매율 1위, 검증된 서비스</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="chat-section">
+  <h2>공유 계정과 다릅니다</h2>
+  <p class="chat-sub">쓰던 계정 그대로, 비밀번호 공유 없이 안전하게!</p>
+  <div class="chat-box">
+    <div class="chat-header">
+      <span>🎬 고튜브 상담</span>
+    </div>
+    <div class="chat-body">
+      <div class="msg-user">쓰던 계정 그대로 쓰는 건가요?</div>
+      <div class="msg-bot">네, 고객님!<br><strong>쓰시던 구글 아이디 그대로</strong> 적용됩니다.</div>
+      <div class="msg-user">VPN 쓰고 그래야 하나요?</div>
+      <div class="msg-bot">아니요! <strong>VPN 절대 필요 없습니다.</strong> 🙅‍♂️<br><br>보내드리는 <strong>활성화 링크</strong>만 클릭하면 3초 만에 끝납니다!</div>
+    </div>
+    <div class="chat-cta">단 한 번 결제로 1년 내내,<br><strong>12개월 66,000원</strong> (월 5,500원 · 공식가 대비 70% 절약 💸)</div>
+  </div>
+</div>
+
+<!-- REVIEWS -->
+<div class="reviews">
+  <h2>고객님들의 <span style="color:#FF0000">생생한 찐 후기</span></h2>
+  <p class="reviews-sub">평점 4.9점! 재구매율 98%가 증명합니다.</p>
+  <div class="slider-wrap">
+    <div class="slider-track">
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">30초 컷 실화냐?</div><div class="review-body">결제하자마자 카톡 띠링 울려서 깜놀했네요.</div><div class="review-author">김O수님 (3개월째 이용)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">가격이 깡패입니다</div><div class="review-body">월 15,000원 내다가 4,500원 꼴이라니...</div><div class="review-author">이O호님 (12개월권)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">VPN 안 써서 너무 편함</div><div class="review-body">링크 누르고 가입 누르면 끝이라 대박 편함.</div><div class="review-author">박O진님 (신규)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">알고리즘 그대로 유지됨</div><div class="review-body">쓰던 거 그대로 써서 구독 채널 다 살아있어요!</div><div class="review-author">최O혁님 (재연장)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">새벽 3시에도 바로 됨</div><div class="review-body">새벽인데도 3초 만에 알림 톡 오네요. 자동화 굿.</div><div class="review-author">강O우님 (12개월권)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">비번 안 알려줘도 돼서 안심</div><div class="review-body">남한테 비번 알려주기 찝찝했는데 초대장 방식이라 안심!</div><div class="review-author">조O현님 (6개월권)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">광고 없는 삶... 최고</div><div class="review-body">이제 광고 나오는 유튜브는 상상할 수도 없습니다.</div><div class="review-author">윤O서님 (신규)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">뮤직까지 공짜라니</div><div class="review-body">유튜브만 되는 줄 알았는데 유튜브 뮤직도 되네요? 개이득.</div><div class="review-author">장O원님 (12개월권)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">30초 컷 실화냐?</div><div class="review-body">결제하자마자 카톡 띠링 울려서 깜놀했네요.</div><div class="review-author">김O수님 (3개월째 이용)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">가격이 깡패입니다</div><div class="review-body">월 15,000원 내다가 4,500원 꼴이라니...</div><div class="review-author">이O호님 (12개월권)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">VPN 안 써서 너무 편함</div><div class="review-body">링크 누르고 가입 누르면 끝이라 대박 편함.</div><div class="review-author">박O진님 (신규)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">알고리즘 그대로 유지됨</div><div class="review-body">쓰던 거 그대로 써서 구독 채널 다 살아있어요!</div><div class="review-author">최O혁님 (재연장)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">새벽 3시에도 바로 됨</div><div class="review-body">새벽인데도 3초 만에 알림 톡 오네요. 자동화 굿.</div><div class="review-author">강O우님 (12개월권)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">비번 안 알려줘도 돼서 안심</div><div class="review-body">남한테 비번 알려주기 찝찝했는데 초대장 방식이라 안심!</div><div class="review-author">조O현님 (6개월권)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">광고 없는 삶... 최고</div><div class="review-body">이제 광고 나오는 유튜브는 상상할 수도 없습니다.</div><div class="review-author">윤O서님 (신규)</div></div>
+      <div class="review-card"><div class="stars">⭐⭐⭐⭐⭐</div><div class="review-title">뮤직까지 공짜라니</div><div class="review-body">유튜브만 되는 줄 알았는데 유튜브 뮤직도 되네요? 개이득.</div><div class="review-author">장O원님 (12개월권)</div></div>
+    </div>
+  </div>
+  <div style="margin-top:40px;">
+    <a href="#" style="background:#FF0000;color:#fff;padding:18px 60px;border-radius:40px;font-size:18px;font-weight:700;text-decoration:none;">구매하러 가기</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>TTOTube</strong><br>
+  문의: 카카오톡 채널 | 평일 09:00 ~ 22:00<br>
+  © 2025 TTOTube. All rights reserved.
+</footer>
+
+<div class="float-btn">💬 카카오톡 문의</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
