@@ -1,586 +1,716 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>고튜브 - YouTube Premium 최저가</title>
+<meta name="description" content="유튜브 프리미엄 최저가 구독 대행 서비스"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%236366f1'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='18' font-weight='900'>G</text></svg>"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f0f23;--card:#1a1a2e;--primary:#6366f1;--primary-light:#818cf8;--purple:#8b5cf6;--lavender:#a78bfa;--text:#e2e8f0;--muted:#94a3b8;--dim:#64748b;--dark-dim:#475569;--red:#ef4444;--green:#4ade80;--yellow:#fbbf24;--border:rgba(255,255,255,0.06);--border-primary:rgba(99,102,241,0.25)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
 
-const PRODUCTS = [
-  { id:1, cat:"video", badge:"SALE", best:true, img:"https://cdn.imweb.me/upload/S20260213878391b35f5c9/b42c33d69b63f.png", brand:"유튜브", name:"프리미엄 + 뮤직 12개월권", desc:"가장 많이 찾는 구성", price:66000, orig:234000, disc:70, period:"12개월", features:["광고 없이 영상 시청","백그라운드 재생","오프라인 저장","모든 기능 포함"], sold:0, link:"/buy/?idx=5" },
-  { id:2, cat:"ai", badge:"파티장 특가", best:true, img:"https://cdn.imweb.me/upload/S20260213878391b35f5c9/05beac9d11e99.png", brand:"제미나이", name:"프로 18개월 파티장 팩", desc:"최대 6인 공유 (본인 + 5명 초대가능)", price:129000, orig:3132000, disc:95, period:"18개월", perMonth:"1인 월 1,194원", features:["내 Google 계정에 직접 적용","Gemini 3.1 Pro 무제한","5TB 클라우드 포함","가족/지인 최대 5명 무료초대"], sold:0, link:"/gemini-detail", detailOnly:true },
-  { id:3, cat:"video", badge:"SALE", best:false, img:"https://cdn.imweb.me/upload/S20260213878391b35f5c9/b42c33d69b63f.png", brand:"유튜브", name:"프리미엄 + 뮤직 3개월권", desc:"단기 이용 추천", price:27000, orig:58500, disc:54, period:"3개월", features:["광고 없이 영상 시청","백그라운드 재생","오프라인 저장","모든 기능 포함"], sold:0, link:"/buy/?idx=12" },
-  { id:4, cat:"ai", badge:"", best:true, img:"https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg", brand:"ChatGPT", name:"Plus 1개월권", desc:"자동결제 없는 수기 갱신 패키지", price:19000, orig:28000, disc:32, period:"1개월", features:["자동 결제 없는 수동 연장","환율 영향 없는 100% 고정 원화","GPT-4o, DALL-E 3 무제한 지원","기존 대화 기록 100% 유지"], sold:0, link:"/27", detailOnly:true },
-  { id:5, cat:"software", badge:"SALE", best:false, img:"https://cdn.imweb.me/upload/S20260213878391b35f5c9/950cce2e2ed99.png", brand:"캔바", name:"프로 6개월", desc:"디자인 작업 필수 구독", price:29900, orig:59400, disc:50, period:"6개월", features:["프로 템플릿 무제한","무제한 디자인 요소","팀 라이브러리","모든 기능 포함"], sold:0, link:"/buy/?idx=11" },
-  { id:6, cat:"music", badge:"SALE", best:false, img:"https://cdn.imweb.me/upload/S20260213878391b35f5c9/12dce80cbca3e.png", brand:"스포티파이", name:"프리미엄 12개월권", desc:"결제대행", price:59800, orig:130800, disc:54, period:"12개월", features:["광고 없이 음악 청취","고음질 스트리밍","오프라인 재생","모든 기능 포함"], sold:0, link:"/buy/?idx=10", soldout:true },
-];
+/* HEADER */
+#header{position:fixed;top:0;left:0;right:0;z-index:1000;transition:all .3s}
+#header.scrolled{background:rgba(15,15,35,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:8px;cursor:pointer}
+.logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff}
+.logo-text{font-weight:800;font-size:18px}
+.nav{display:flex;align-items:center;gap:24px}
+.nav-links{display:flex;gap:24px}
+.nav-link{color:var(--muted);font-size:14px;cursor:pointer;transition:color .2s;background:none;border:none}
+.nav-link:hover,.nav-link.active{color:#fff}
+.nav-link.active{color:var(--primary-light);font-weight:600}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.btn-login{background:transparent;border:1px solid rgba(255,255,255,.15);color:#fff;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-login:hover{border-color:var(--primary)}
+.btn-signup{background:linear-gradient(135deg,var(--primary),var(--purple));border:none;color:#fff;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600;transition:opacity .2s}
+.btn-signup:hover{opacity:.9}
+.cart-icon{position:relative;cursor:pointer;font-size:18px;padding:4px}
+.cart-badge{position:absolute;top:-4px;right:-6px;background:var(--red);border-radius:10px;padding:1px 5px;font-size:9px;display:none}
+.hamburger{display:none;background:none;border:none;color:#fff;font-size:24px;cursor:pointer}
 
-const CATEGORIES = [
-  { key:"all", icon:"⊞", label:"전체보기" },
-  { key:"video", icon:"▶", label:"영상" },
-  { key:"music", icon:"♫", label:"음악" },
-  { key:"ai", icon:"✦", label:"AI 툴" },
-  { key:"software", icon:"◫", label:"소프트웨어" },
-];
+/* MOBILE MENU */
+#mobileMenu{display:none;position:fixed;inset:0;z-index:9998;background:rgba(15,15,35,.98);flex-direction:column;align-items:center;justify-content:center;gap:28px}
+#mobileMenu.open{display:flex}
+#mobileMenu .nav-link{font-size:20px;color:#fff}
 
-const REVIEWS = [
-  { stars:5, title:"30초 컷 실화냐?", text:"결제하자마자 카톡 띠링 울려서 깜놀했네요.\n한국인 성격에 딱 맞는 속도입니다 ㅋㅋ", user:"김O수님", tag:"3개월째 이용" },
-  { stars:5, title:"가격이 깡패입니다", text:"월 15,000원 내다가 4,500원 꼴이라니...\n진작 알았으면 치킨 10마리는 사 먹었을 듯 ㅠㅠ", user:"이O호님", tag:"12개월권" },
-  { stars:5, title:"VPN 안 써서 너무 편함", text:"다른 데는 VPN 켜고 우회하고 난리 쳐야 되는데\n여긴 그냥 링크 누르고 '가입' 누르면 끝이라 대박 편함.", user:"박O진님", tag:"신규" },
-  { stars:5, title:"알고리즘 그대로 유지됨", text:"계정 새로 파야 되는 줄 알고 걱정했는데\n쓰던 거 그대로 써서 구독 채널 다 살아있어요!", user:"최O혁님", tag:"재연장" },
-  { stars:5, title:"새벽 3시에도 바로 됨", text:"밤새 유튜브 보다가 광고 짜증 나서 샀는데\n새벽인데도 3초 만에 알림 톡 오네요.", user:"강O우님", tag:"12개월권" },
-  { stars:5, title:"비번 안 알려줘도 돼서 안심", text:"남한테 비번 알려주기 찝찝했는데\n여긴 초대장 방식이라 제 정보가 털릴 일이 없네요.", user:"조O현님", tag:"6개월권" },
-  { stars:5, title:"광고 없는 삶... 최고", text:"이제 광고 나오는 유튜브는 상상할 수도 없습니다.\n삶의 질이 달라짐. 무조건 하세요.", user:"윤O서님", tag:"신규" },
-  { stars:5, title:"뮤직까지 공짜라니", text:"유튜브만 되는 줄 알았는데 유튜브 뮤직도 되네요?\n멜론 해지하고 이걸로 갈아탔습니다.", user:"장O원님", tag:"12개월권" },
-  { stars:5, title:"아이폰도 잘 됩니다", text:"애플이라 결제 막혀서 짜증 났는데\n여기서 하니까 기종 상관없이 바로 되네요.", user:"임O호님", tag:"아이폰 유저" },
-  { stars:5, title:"컴맹도 1분이면 함", text:"복잡한 거 딱 질색인데,\n그냥 카톡 온 거 누르고 '시작하기' 누르니까 끝남.", user:"서O연님", tag:"50대" },
-];
+/* HERO */
+.hero{position:relative;overflow:hidden;padding:80px 20px 60px;text-align:center}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(99,102,241,.15) 0%,transparent 60%)}
+.hero-content{position:relative;z-index:1;max-width:700px;margin:0 auto}
+.hero-sub{color:var(--primary-light);font-size:13px;font-weight:600;letter-spacing:2px;margin-bottom:12px}
+.hero h1{font-size:clamp(28px,5vw,44px);font-weight:900;line-height:1.2;margin-bottom:20px;background:linear-gradient(135deg,#fff 40%,var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:32px}
+.hero p b{color:var(--text)}
+.hero-tags{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:32px}
+.hero-tag{background:rgba(99,102,241,.12);border:1px solid var(--border-primary);padding:6px 16px;border-radius:20px;font-size:13px;color:var(--lavender)}
+.hero-price-box{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:16px;padding:20px;display:inline-block}
+.hero-price-box .discount{color:var(--red);font-size:13px;font-weight:700}
+.hero-price-box .orig{color:var(--dark-dim);font-size:14px;text-decoration:line-through}
+.hero-price-box .price{color:#fff;font-size:32px;font-weight:900}
+.hero-price-box .price span{font-size:14px;font-weight:400;color:var(--muted)}
 
-const CHAT_MSGS = [
-  { from:"user", text:"쓰던 계정 그대로 쓰는 건가요?", time:"오후 2:15" },
-  { from:"bot", text:"네, 고객님!\n<b>쓰시던 구글 아이디 그대로</b>\n적용됩니다.", time:"오후 2:16" },
-  { from:"user", text:"가격은 얼마인가요?\n곧 인상된다는 말이 있던데..", time:"오후 2:17" },
-  { from:"bot", text:'📢 <b>여전히 최저가!</b>\n\n현재 <b>12개월 66,000원</b>(월 5,500원)에 제공 중입니다.\n공식 가격 대비 <b>약 70% 저렴</b>하며, 지금 결제해 두시면 <b>1년 내내 추가 요금 없이</b> 쭉 이용 가능합니다.', time:"오후 2:18" },
-  { from:"user", text:"복잡한 거 딱 질색인데...\nVPN 쓰고 그래야 하나요?", time:"오후 2:19" },
-  { from:"bot", text:'아니요!\n<b>VPN 절대 필요 없습니다.</b> 🙅‍♂️\n\n구매 즉시 보내드리는 <b>활성화 링크</b>만 클릭하세요.\n\'가입\' 버튼 하나만 누르면\n<b>3초 만에 세팅이 끝납니다.</b>', time:"오후 2:20" },
-];
+/* CATEGORIES */
+.categories{max-width:1200px;margin:0 auto;padding:0 20px 20px;display:flex;gap:8px;overflow-x:auto}
+.categories::-webkit-scrollbar{display:none}
+.cat-btn{white-space:nowrap;padding:8px 18px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.cat-btn.active{border-color:var(--primary);background:rgba(99,102,241,.15);color:var(--primary-light)}
 
-export default function GoTubeClone() {
-  const [cat, setCat] = useState("all");
-  const [mobileMenu, setMobileMenu] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
-  const [showKakao, setShowKakao] = useState(true);
-  const [liveCount, setLiveCount] = useState(28);
-  const [page, setPage] = useState("home");
-  const [loginModal, setLoginModal] = useState(false);
-  const [signupModal, setSignupModal] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [showNotice, setShowNotice] = useState(false);
-  const reviewRef = useRef(null);
-  const [reviewScroll, setReviewScroll] = useState(0);
+/* PRODUCT GRID */
+.products{max-width:1200px;margin:0 auto;padding:0 20px 40px}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.product-card{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border);display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s;cursor:pointer;position:relative}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(99,102,241,.15)}
+.card-badges{position:absolute;top:12px;left:12px;display:flex;gap:6px;z-index:2}
+.badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;color:#fff}
+.badge-sale{background:var(--red)}
+.badge-best{background:var(--primary)}
+.badge-soldout{background:#666}
+.badge-special{background:#f59e0b}
+.card-header{padding:28px 20px 16px;display:flex;align-items:center;gap:12px}
+.card-header img{width:40px;height:40px;border-radius:10px;object-fit:cover;background:#fff}
+.card-brand{color:var(--muted);font-size:12px}
+.card-name{color:#fff;font-size:16px;font-weight:700;margin-top:2px}
+.card-desc{padding:0 20px;color:var(--dim);font-size:13px}
+.card-divider{margin:12px 20px;height:1px;background:var(--border)}
+.card-pricing{padding:0 20px}
+.card-price{color:#fff;font-size:24px;font-weight:800}
+.card-period{color:var(--primary);font-size:13px;font-weight:600;margin-left:8px}
+.card-per-month{color:var(--lavender);font-size:12px;margin-top:2px}
+.card-orig{color:var(--dark-dim);font-size:13px;text-decoration:line-through;margin-right:6px}
+.card-disc{color:var(--red);font-size:13px;font-weight:700}
+.card-features{padding:12px 20px 0}
+.card-feature{color:var(--muted);font-size:12px;padding:3px 0;display:flex;align-items:center;gap:6px}
+.card-feature::before{content:'•';color:var(--primary)}
+.card-sold{padding:8px 20px;color:var(--dark-dim);font-size:12px}
+.card-sold b{color:#fff}
+.card-action{padding:0 20px 20px;margin-top:auto}
+.btn-buy{width:100%;padding:12px;border-radius:12px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;font-weight:700;font-size:14px;transition:opacity .2s}
+.btn-buy:hover{opacity:.9}
+.btn-buy.soldout{background:#333;cursor:not-allowed;opacity:.5}
+.soldout-label{text-align:center;color:var(--red);font-size:11px;margin-top:6px}
+.view-all{text-align:center;margin-top:24px}
+.view-all button{background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--muted);padding:10px 28px;border-radius:10px;font-size:13px;cursor:pointer;transition:all .2s}
+.view-all button:hover{border-color:var(--primary);color:#fff}
 
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", h);
-    return () => window.removeEventListener("scroll", h);
-  }, []);
+/* CHARITY */
+.charity{max-width:900px;margin:0 auto;padding:20px 20px 40px}
+.charity-box{background:linear-gradient(135deg,#1a2e1a,#1a1a2e);border-radius:20px;padding:32px;border:1px solid rgba(74,222,128,.15);text-align:center}
+.charity-box h3{font-size:20px;font-weight:800;margin-bottom:12px}
+.charity-box h3 span{color:var(--green)}
+.charity-box p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:16px}
+.charity-badge{display:inline-block;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);padding:6px 16px;border-radius:20px;color:var(--green);font-size:12px;font-weight:600}
 
-  useEffect(() => {
-    const t = setTimeout(() => setShowPopup(true), 3000);
-    return () => clearTimeout(t);
-  }, []);
+/* LIVE BANNER */
+.live-banner{max-width:900px;margin:0 auto;padding:0 20px 40px}
+.live-inner{background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:16px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border:1px solid rgba(99,102,241,.3)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1.5s infinite;display:inline-block;margin-right:8px}
+.live-count{color:var(--yellow);font-size:13px;font-weight:600}
+.live-title{color:#fff;font-weight:700;font-size:16px;margin-top:4px}
+.live-sub{color:var(--lavender);font-size:12px;margin-top:2px}
+.live-btn{background:#fff;color:#1e1b4b;border:none;padding:10px 24px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;transition:transform .1s}
+.live-btn:hover{transform:scale(1.03)}
 
-  useEffect(() => {
-    const i = setInterval(() => setLiveCount(c => c + Math.floor(Math.random()*3) - 1), 5000);
-    return () => clearInterval(i);
-  }, []);
+/* WHY SECTION */
+.why{max-width:900px;margin:0 auto;padding:0 20px 60px;text-align:center}
+.why h2{font-size:28px;font-weight:800;margin-bottom:40px}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.why-card{background:var(--card);border-radius:16px;padding:28px;border:1px solid var(--border)}
+.why-icon{font-size:36px;margin-bottom:12px}
+.why-title{font-weight:700;font-size:16px;margin-bottom:4px}
+.why-desc{color:var(--muted);font-size:13px}
+.why-note{margin-top:32px;padding:24px 20px;background:rgba(99,102,241,.05);border-radius:16px;border:1px solid rgba(99,102,241,.1)}
+.why-note p{color:var(--text);font-size:15px;line-height:1.7}
+.why-note small{color:var(--primary-light);font-size:12px;display:block;margin-top:12px}
 
-  const filtered = cat === "all" ? PRODUCTS : PRODUCTS.filter(p => p.cat === cat);
+/* CHAT SECTION */
+.chat-section{max-width:900px;margin:0 auto;padding:0 20px 60px}
+.chat-header-text{text-align:center;margin-bottom:32px}
+.chat-header-text h2{font-size:28px;font-weight:800;margin-bottom:8px}
+.chat-header-text p{color:var(--muted);font-size:14px}
+.chat-box{max-width:400px;margin:0 auto;background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+.chat-top{background:var(--primary);padding:12px 16px;display:flex;align-items:center;gap:10px}
+.chat-avatar{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:var(--primary)}
+.chat-name{color:#fff;font-weight:700;font-size:14px}
+.chat-body{padding:16px;max-height:380px;overflow-y:auto}
+.chat-msg{display:flex;margin-bottom:12px}
+.chat-msg.user{justify-content:flex-end}
+.chat-msg.bot{justify-content:flex-start}
+.chat-bubble{max-width:80%;padding:10px 14px;font-size:13px;line-height:1.6;color:#fff}
+.chat-msg.user .chat-bubble{background:var(--primary);border-radius:16px 16px 4px 16px}
+.chat-msg.bot .chat-bubble{background:#252547;border-radius:16px 16px 16px 4px}
+.chat-time{color:rgba(255,255,255,.4);font-size:10px;margin-top:4px;text-align:right}
+.chat-summary{max-width:500px;margin:24px auto 0;text-align:center}
+.chat-summary p{color:var(--text);font-size:14px;line-height:1.8}
+.chat-summary .highlight{color:var(--lavender);font-size:14px;margin-top:12px;font-weight:600}
 
-  const fmt = n => n.toLocaleString("ko-KR");
+/* REVIEWS */
+.reviews{padding:0 0 60px;overflow:hidden}
+.reviews-header{text-align:center;margin-bottom:32px;padding:0 20px}
+.reviews-header h2{font-size:24px;font-weight:800;margin-bottom:8px}
+.reviews-header p{color:var(--muted);font-size:14px}
+.review-track{display:flex;gap:16px;animation:scrollReviews 40s linear infinite;width:max-content}
+.review-track:hover{animation-play-state:paused}
+.review-card{min-width:280px;max-width:280px;background:var(--card);border-radius:16px;padding:20px;border:1px solid var(--border);flex-shrink:0}
+.review-stars{color:var(--yellow);font-size:12px;margin-bottom:8px}
+.review-title{color:#fff;font-size:15px;font-weight:700;margin-bottom:8px}
+.review-text{color:var(--muted);font-size:12px;white-space:pre-line;line-height:1.6;min-height:60px}
+.review-user{color:var(--primary);font-size:11px;margin-top:12px}
+.reviews-cta{text-align:center;margin-top:32px}
+.btn-cta{background:linear-gradient(135deg,var(--primary),var(--purple));border:none;color:#fff;padding:14px 40px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-cta:hover{opacity:.9}
 
-  const ProductCard = ({ p }) => (
-    <div style={{ background:"#1a1a2e", borderRadius:16, overflow:"hidden", border:"1px solid rgba(255,255,255,0.06)", display:"flex", flexDirection:"column", transition:"transform 0.2s, box-shadow 0.2s", cursor:"pointer", position:"relative" }}
-      onMouseEnter={e => { e.currentTarget.style.transform="translateY(-4px)"; e.currentTarget.style.boxShadow="0 12px 40px rgba(99,102,241,0.15)"; }}
-      onMouseLeave={e => { e.currentTarget.style.transform=""; e.currentTarget.style.boxShadow=""; }}>
-      <div style={{ position:"absolute", top:12, left:12, display:"flex", gap:6, zIndex:2 }}>
-        {p.badge && <span style={{ background: p.badge==="SALE"?"#ef4444":p.badge==="파티장 특가"?"#f59e0b":"#6366f1", color:"#fff", fontSize:11, fontWeight:700, padding:"3px 8px", borderRadius:6 }}>{p.badge}</span>}
-        {p.best && <span style={{ background:"#6366f1", color:"#fff", fontSize:11, fontWeight:700, padding:"3px 8px", borderRadius:6 }}>BEST</span>}
-        {p.soldout && <span style={{ background:"#666", color:"#fff", fontSize:11, fontWeight:700, padding:"3px 8px", borderRadius:6 }}>SOLDOUT</span>}
-      </div>
-      <div style={{ padding:"28px 20px 16px", display:"flex", alignItems:"center", gap:12 }}>
-        <img src={p.img} alt="" style={{ width:40, height:40, borderRadius:10, objectFit:"cover", background:"#fff" }} onError={e => e.target.style.display="none"} />
-        <div>
-          <div style={{ color:"#94a3b8", fontSize:12 }}>{p.brand}</div>
-          <div style={{ color:"#fff", fontSize:16, fontWeight:700, marginTop:2 }}>{p.name}</div>
-        </div>
-      </div>
-      <div style={{ padding:"0 20px", color:"#64748b", fontSize:13 }}>{p.desc}</div>
-      <div style={{ margin:"12px 20px", height:1, background:"rgba(255,255,255,0.06)" }} />
-      <div style={{ padding:"0 20px" }}>
-        <div style={{ display:"flex", alignItems:"baseline", gap:8 }}>
-          <span style={{ color:"#fff", fontSize:24, fontWeight:800 }}>{fmt(p.price)}원</span>
-          <span style={{ color:"#6366f1", fontSize:13, fontWeight:600 }}>{p.period}</span>
-        </div>
-        {p.perMonth && <div style={{ color:"#a78bfa", fontSize:12, marginTop:2 }}>({p.perMonth})</div>}
-        <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:4 }}>
-          <span style={{ color:"#475569", fontSize:13, textDecoration:"line-through" }}>{fmt(p.orig)}원</span>
-          <span style={{ color:"#ef4444", fontSize:13, fontWeight:700 }}>-{p.disc}%</span>
-        </div>
-      </div>
-      <div style={{ padding:"12px 20px 0" }}>
-        {p.features.map((f,i) => (
-          <div key={i} style={{ color:"#94a3b8", fontSize:12, padding:"3px 0", display:"flex", alignItems:"center", gap:6 }}>
-            <span style={{ color:"#6366f1" }}>•</span>{f}
-          </div>
-        ))}
-      </div>
-      {!p.soldout && <div style={{ padding:"8px 20px", color:"#475569", fontSize:12 }}>이번 달 <b style={{ color:"#fff" }}>{p.sold}</b>명 구매</div>}
-      <div style={{ padding:"0 20px 20px", marginTop:"auto" }}>
-        <button onClick={() => p.soldout ? null : p.detailOnly ? setSelectedProduct(p) : setSelectedProduct(p)}
-          style={{ width:"100%", padding:"12px", borderRadius:12, border:"none", cursor: p.soldout?"not-allowed":"pointer",
-            background: p.soldout?"#333":"linear-gradient(135deg,#6366f1,#8b5cf6)", color:"#fff", fontWeight:700, fontSize:14, transition:"opacity 0.2s", opacity: p.soldout?0.5:1 }}>
-          {p.soldout ? "현재 품절" : p.detailOnly ? "상세보기 →" : "지금 구매하기 →"}
-        </button>
-        {p.soldout && <div style={{ textAlign:"center", color:"#ef4444", fontSize:11, marginTop:6 }}>일시 품절</div>}
-      </div>
-    </div>
-  );
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:32px 20px;text-align:center}
+.footer-links{display:flex;justify-content:center;gap:16px;margin-bottom:16px}
+.footer-links span{color:var(--dim);font-size:12px;cursor:pointer}
+.footer-links span:hover{color:#fff}
+.footer-info{color:var(--dark-dim);font-size:11px;line-height:1.8}
 
-  const Modal = ({ show, onClose, children }) => {
-    if (!show) return null;
-    return (
-      <div style={{ position:"fixed", inset:0, zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(0,0,0,0.7)", backdropFilter:"blur(4px)" }} onClick={onClose}>
-        <div style={{ background:"#1a1a2e", borderRadius:20, padding:32, maxWidth:420, width:"90%", position:"relative", border:"1px solid rgba(255,255,255,0.1)" }} onClick={e => e.stopPropagation()}>
-          <button onClick={onClose} style={{ position:"absolute", top:12, right:16, background:"none", border:"none", color:"#fff", fontSize:20, cursor:"pointer" }}>✕</button>
-          {children}
-        </div>
-      </div>
-    );
-  };
+/* FLOATING KAKAO */
+.kakao-float{position:fixed;bottom:24px;right:24px;z-index:900;width:56px;height:56px;border-radius:50%;background:#fee500;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:float 3s ease-in-out infinite;font-size:28px;border:none}
 
-  const LoginForm = () => {
-    const [email, setEmail] = useState("");
-    const [pw, setPw] = useState("");
-    return (
-      <div>
-        <h2 style={{ color:"#fff", fontSize:22, marginBottom:24, textAlign:"center" }}>로그인</h2>
-        <input placeholder="이메일" value={email} onChange={e=>setEmail(e.target.value)} style={{ width:"100%", padding:12, borderRadius:10, border:"1px solid #333", background:"#0f0f23", color:"#fff", marginBottom:12, boxSizing:"border-box", outline:"none" }} />
-        <input type="password" placeholder="비밀번호" value={pw} onChange={e=>setPw(e.target.value)} style={{ width:"100%", padding:12, borderRadius:10, border:"1px solid #333", background:"#0f0f23", color:"#fff", marginBottom:20, boxSizing:"border-box", outline:"none" }} />
-        <button onClick={() => { alert("로그인 기능은 데모입니다."); setLoginModal(false); }} style={{ width:"100%", padding:14, borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366f1,#8b5cf6)", color:"#fff", fontWeight:700, fontSize:15, cursor:"pointer" }}>로그인</button>
-        <div style={{ textAlign:"center", marginTop:16 }}>
-          <span style={{ color:"#64748b", fontSize:13 }}>계정이 없으신가요? </span>
-          <span style={{ color:"#818cf8", fontSize:13, cursor:"pointer" }} onClick={() => { setLoginModal(false); setSignupModal(true); }}>회원가입</span>
-        </div>
-      </div>
-    );
-  };
+/* POPUP */
+.promo-popup{position:fixed;bottom:24px;left:24px;z-index:950;max-width:320px;animation:slideUp .4s ease}
+.promo-inner{background:#1e1b4b;border-radius:16px;padding:16px;border:1px solid rgba(99,102,241,.3);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.promo-close{background:none;border:none;color:var(--dim);cursor:pointer;font-size:16px}
+.promo-title{color:#fff;font-weight:700;font-size:14px;margin:4px 0}
+.promo-btn{width:100%;margin-top:12px;padding:8px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;font-weight:600;font-size:12px;cursor:pointer}
 
-  const SignupForm = () => {
-    const [email, setEmail] = useState("");
-    const [pw, setPw] = useState("");
-    const [pw2, setPw2] = useState("");
-    return (
-      <div>
-        <h2 style={{ color:"#fff", fontSize:22, marginBottom:24, textAlign:"center" }}>회원가입</h2>
-        <input placeholder="이메일" value={email} onChange={e=>setEmail(e.target.value)} style={{ width:"100%", padding:12, borderRadius:10, border:"1px solid #333", background:"#0f0f23", color:"#fff", marginBottom:12, boxSizing:"border-box", outline:"none" }} />
-        <input type="password" placeholder="비밀번호" value={pw} onChange={e=>setPw(e.target.value)} style={{ width:"100%", padding:12, borderRadius:10, border:"1px solid #333", background:"#0f0f23", color:"#fff", marginBottom:12, boxSizing:"border-box", outline:"none" }} />
-        <input type="password" placeholder="비밀번호 확인" value={pw2} onChange={e=>setPw2(e.target.value)} style={{ width:"100%", padding:12, borderRadius:10, border:"1px solid #333", background:"#0f0f23", color:"#fff", marginBottom:20, boxSizing:"border-box", outline:"none" }} />
-        <button onClick={() => { alert("회원가입 기능은 데모입니다."); setSignupModal(false); }} style={{ width:"100%", padding:14, borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366f1,#8b5cf6)", color:"#fff", fontWeight:700, fontSize:15, cursor:"pointer" }}>회원가입</button>
-      </div>
-    );
-  };
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--card);border-radius:20px;padding:32px;max-width:420px;width:90%;position:relative;border:1px solid rgba(255,255,255,.1);animation:fadeInUp .3s ease}
+.modal-close{position:absolute;top:12px;right:16px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer}
+.modal-title{font-size:22px;font-weight:800;margin-bottom:24px;text-align:center}
+.modal-input{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:var(--bg);color:#fff;margin-bottom:12px;outline:none;font-size:14px}
+.modal-input:focus{border-color:var(--primary)}
+.modal-submit{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px}
+.modal-link{text-align:center;margin-top:16px;font-size:13px;color:var(--dim)}
+.modal-link a{color:var(--primary-light);cursor:pointer}
 
-  const ProductDetail = () => {
-    if (!selectedProduct) return null;
-    const p = selectedProduct;
-    return (
-      <div>
-        <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:20 }}>
-          <img src={p.img} alt="" style={{ width:48, height:48, borderRadius:12, background:"#fff" }} />
-          <div>
-            <div style={{ color:"#a78bfa", fontSize:12 }}>{p.brand}</div>
-            <div style={{ color:"#fff", fontSize:18, fontWeight:700 }}>{p.name}</div>
-          </div>
-        </div>
-        <div style={{ color:"#94a3b8", fontSize:14, marginBottom:16 }}>{p.desc}</div>
-        <div style={{ background:"#0f0f23", borderRadius:12, padding:16, marginBottom:16 }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline" }}>
-            <span style={{ color:"#fff", fontSize:26, fontWeight:800 }}>{fmt(p.price)}원</span>
-            <span style={{ color:"#ef4444", fontWeight:700 }}>-{p.disc}%</span>
-          </div>
-          <div style={{ color:"#475569", fontSize:13, textDecoration:"line-through" }}>정가 {fmt(p.orig)}원</div>
-          {p.perMonth && <div style={{ color:"#a78bfa", fontSize:13, marginTop:4 }}>{p.perMonth}</div>}
-        </div>
-        <div style={{ marginBottom:20 }}>
-          {p.features.map((f,i) => <div key={i} style={{ color:"#cbd5e1", fontSize:13, padding:"4px 0" }}>✓ {f}</div>)}
-        </div>
-        <button onClick={() => { setCartCount(c=>c+1); alert("장바구니에 추가되었습니다!"); setSelectedProduct(null); }} style={{ width:"100%", padding:14, borderRadius:12, border:"none", background:"linear-gradient(135deg,#6366f1,#8b5cf6)", color:"#fff", fontWeight:700, fontSize:15, cursor:"pointer" }}>
-          장바구니 담기
-        </button>
-        <button onClick={() => { alert("결제 페이지로 이동합니다. (데모)"); setSelectedProduct(null); }} style={{ width:"100%", padding:14, borderRadius:12, border:"1px solid #6366f1", background:"transparent", color:"#818cf8", fontWeight:700, fontSize:15, cursor:"pointer", marginTop:8 }}>
-          바로 구매하기
-        </button>
-      </div>
-    );
-  };
+/* DETAIL MODAL */
+.detail-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.detail-header img{width:48px;height:48px;border-radius:12px;background:#fff}
+.detail-brand{color:var(--lavender);font-size:12px}
+.detail-name{color:#fff;font-size:18px;font-weight:700}
+.detail-desc{color:var(--muted);font-size:14px;margin-bottom:16px}
+.detail-price-box{background:var(--bg);border-radius:12px;padding:16px;margin-bottom:16px}
+.detail-price{font-size:26px;font-weight:800}
+.detail-feature{color:#cbd5e1;font-size:13px;padding:4px 0}
+.btn-cart{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.btn-direct{width:100%;padding:14px;border-radius:12px;border:1px solid var(--primary);background:transparent;color:var(--primary-light);font-weight:700;font-size:15px;cursor:pointer;margin-top:8px}
 
-  // Auto-scroll reviews
-  const reviewTrackRef = useRef(null);
-  const [reviewAnimPaused, setReviewAnimPaused] = useState(false);
+/* PAGES */
+.page{max-width:900px;margin:0 auto;padding:40px 20px}
+.page h2{font-size:28px;font-weight:800;margin-bottom:8px}
+.page .subtitle{color:var(--muted);margin-bottom:32px}
+.notice-item{background:var(--card);border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);cursor:pointer;transition:border-color .2s}
+.notice-item:hover{border-color:var(--primary)}
+.notice-title{color:var(--text);font-size:14px}
+.notice-date{color:var(--dim);font-size:12px}
+.faq-item{background:var(--card);border-radius:12px;margin-bottom:12px;border:1px solid var(--border);overflow:hidden}
+.faq-q{padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.faq-q span{color:var(--text);font-size:14px;font-weight:600}
+.faq-arrow{color:var(--primary);font-size:18px;transition:transform .3s}
+.faq-arrow.open{transform:rotate(180deg)}
+.faq-a{padding:0 20px 16px;color:var(--muted);font-size:14px;line-height:1.7;display:none}
+.faq-a.open{display:block}
+.service-card{background:var(--card);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:16px}
+.service-icon{font-size:28px;margin-bottom:12px}
+.service-title{font-size:18px;font-weight:700;margin-bottom:8px}
+.service-desc{color:var(--muted);font-size:14px;line-height:1.7}
+.review-page-card{background:var(--card);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:16px}
 
-  const NoticeData = [
-    { title:"[공지] 유튜브 프리미엄 가격 인상 안내", date:"2026.04.01" },
-    { title:"[공지] 제미나이 프로 파티장 팩 출시!", date:"2026.03.15" },
-    { title:"[공지] ChatGPT Plus 1개월권 재입고", date:"2026.03.10" },
-    { title:"[공지] 스포티파이 일시 품절 안내", date:"2026.03.05" },
-    { title:"[공지] 캔바 프로 6개월 입고 완료", date:"2026.02.28" },
-  ];
+/* ANIMATIONS */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes scrollReviews{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-  const FAQData = [
-    { q:"구매 후 얼마나 걸리나요?", a:"결제 확인 후 당일 순차 발송됩니다. 보통 1시간 이내에 카카오톡으로 활성화 링크를 보내드립니다." },
-    { q:"VPN이 필요한가요?", a:"아니요! VPN 없이 보내드리는 링크만 클릭하시면 바로 적용됩니다." },
-    { q:"기존 계정을 그대로 사용할 수 있나요?", a:"네, 기존에 사용하시던 구글 계정 그대로 적용됩니다. 구독 채널, 재생목록 등 모든 데이터가 유지됩니다." },
-    { q:"환불이 가능한가요?", a:"활성화 전이라면 100% 환불 가능합니다. 활성화 후에는 환불이 어렵습니다." },
-    { q:"비밀번호를 공유해야 하나요?", a:"아니요! 비밀번호 공유 없이 공식 초대 링크 방식으로 안전하게 적용됩니다." },
-  ];
-
-  const [openFaq, setOpenFaq] = useState(null);
-
-  const ReviewPage = () => (
-    <div style={{ maxWidth:900, margin:"0 auto", padding:"40px 20px" }}>
-      <h2 style={{ color:"#fff", fontSize:28, fontWeight:800, marginBottom:8 }}>전체 리뷰</h2>
-      <p style={{ color:"#94a3b8", marginBottom:32 }}>평점 4.9점 · 재구매율 98%</p>
-      <div style={{ display:"grid", gap:16 }}>
-        {REVIEWS.map((r,i) => (
-          <div key={i} style={{ background:"#1a1a2e", borderRadius:16, padding:24, border:"1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ color:"#fbbf24", marginBottom:8 }}>{"⭐".repeat(r.stars)}</div>
-            <div style={{ color:"#fff", fontSize:16, fontWeight:700, marginBottom:8 }}>{r.title}</div>
-            <div style={{ color:"#94a3b8", fontSize:14, whiteSpace:"pre-line", lineHeight:1.6 }}>{r.text}</div>
-            <div style={{ color:"#6366f1", fontSize:12, marginTop:12 }}>{r.user} ({r.tag})</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const NoticePage = () => (
-    <div style={{ maxWidth:900, margin:"0 auto", padding:"40px 20px" }}>
-      <h2 style={{ color:"#fff", fontSize:28, fontWeight:800, marginBottom:32 }}>공지사항</h2>
-      {NoticeData.map((n,i) => (
-        <div key={i} style={{ background:"#1a1a2e", borderRadius:12, padding:"16px 20px", marginBottom:12, display:"flex", justifyContent:"space-between", alignItems:"center", border:"1px solid rgba(255,255,255,0.06)", cursor:"pointer" }}
-          onClick={() => setShowNotice(i)}>
-          <span style={{ color:"#e2e8f0", fontSize:14 }}>{n.title}</span>
-          <span style={{ color:"#64748b", fontSize:12 }}>{n.date}</span>
-        </div>
-      ))}
-    </div>
-  );
-
-  const FAQPage = () => (
-    <div style={{ maxWidth:900, margin:"0 auto", padding:"40px 20px" }}>
-      <h2 style={{ color:"#fff", fontSize:28, fontWeight:800, marginBottom:32 }}>자주 묻는 질문</h2>
-      {FAQData.map((f,i) => (
-        <div key={i} style={{ background:"#1a1a2e", borderRadius:12, marginBottom:12, border:"1px solid rgba(255,255,255,0.06)", overflow:"hidden" }}>
-          <div onClick={() => setOpenFaq(openFaq===i?null:i)} style={{ padding:"16px 20px", cursor:"pointer", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <span style={{ color:"#e2e8f0", fontSize:14, fontWeight:600 }}>Q. {f.q}</span>
-            <span style={{ color:"#6366f1", fontSize:18, transition:"transform 0.3s", transform: openFaq===i?"rotate(180deg)":"" }}>▾</span>
-          </div>
-          {openFaq===i && <div style={{ padding:"0 20px 16px", color:"#94a3b8", fontSize:14, lineHeight:1.7 }}>A. {f.a}</div>}
-        </div>
-      ))}
-    </div>
-  );
-
-  const BuyPage = () => (
-    <div style={{ maxWidth:1100, margin:"0 auto", padding:"40px 20px" }}>
-      <h2 style={{ color:"#fff", fontSize:28, fontWeight:800, marginBottom:8 }}>구매하기</h2>
-      <p style={{ color:"#94a3b8", marginBottom:32 }}>원하는 상품을 선택하세요</p>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))", gap:20 }}>
-        {PRODUCTS.map(p => <ProductCard key={p.id} p={p} />)}
-      </div>
-    </div>
-  );
-
-  const ServicePage = () => (
-    <div style={{ maxWidth:900, margin:"0 auto", padding:"40px 20px" }}>
-      <h2 style={{ color:"#fff", fontSize:28, fontWeight:800, marginBottom:8 }}>서비스 안내</h2>
-      <p style={{ color:"#94a3b8", marginBottom:32 }}>고튜브가 제공하는 프리미엄 구독 대행 서비스</p>
-      <div style={{ display:"grid", gap:20 }}>
-        {[
-          { icon:"🛡️", title:"비밀번호 공유 없는 안전한 방식", desc:"공식 활성화 링크를 통해 고객님의 계정에 직접 적용됩니다. 비밀번호를 공유하지 않아 개인정보가 100% 안전합니다." },
-          { icon:"⚡", title:"당일 순차 발송", desc:"결제 확인 후 순차적으로 빠르게 처리해드립니다. 활성화 링크를 카카오톡으로 보내드리며, 클릭 한 번으로 적용됩니다." },
-          { icon:"💰", title:"압도적 가성비", desc:"공식 가격 대비 최대 70% 이상 할인된 가격으로 제공합니다. 한 번 결제로 기간 내내 추가 요금 없이 이용 가능합니다." },
-          { icon:"🔧", title:"철저한 A/S", desc:"이용 중 문제가 발생하면 카카오톡 상담을 통해 빠르게 해결해드립니다." },
-        ].map((s,i) => (
-          <div key={i} style={{ background:"#1a1a2e", borderRadius:16, padding:24, border:"1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ fontSize:28, marginBottom:12 }}>{s.icon}</div>
-            <div style={{ color:"#fff", fontSize:18, fontWeight:700, marginBottom:8 }}>{s.title}</div>
-            <div style={{ color:"#94a3b8", fontSize:14, lineHeight:1.7 }}>{s.desc}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const navigate = (p) => { setPage(p); setMobileMenu(false); window.scrollTo(0,0); };
-
-  const reviewKeyframes = `
-    @keyframes scrollReviews {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
-    @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
-  `;
-
-  return (
-    <div style={{ background:"#0f0f23", minHeight:"100vh", fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif", color:"#fff", overflowX:"hidden" }}>
-      <style>{reviewKeyframes}</style>
-
-      {/* HEADER */}
-      <header style={{ position:"fixed", top:0, left:0, right:0, zIndex:1000, background: scrolled ? "rgba(15,15,35,0.95)" : "transparent", backdropFilter: scrolled?"blur(20px)":"none", borderBottom: scrolled?"1px solid rgba(255,255,255,0.06)":"none", transition:"all 0.3s" }}>
-        <div style={{ maxWidth:1200, margin:"0 auto", padding:"0 20px", height:64, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-          <div onClick={() => navigate("home")} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
-            <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#6366f1,#8b5cf6)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:16 }}>G</div>
-            <span style={{ color:"#fff", fontWeight:800, fontSize:18 }}>고튜브</span>
-          </div>
-          <nav style={{ display:"flex", alignItems:"center", gap:24 }}>
-            <div className="desktop-nav" style={{ display:"flex", gap:24 }}>
-              {[{l:"서비스",p:"service"},{l:"구매하기",p:"buy"},{l:"전체리뷰",p:"review"},{l:"공지사항",p:"notice"},{l:"FAQ",p:"faq"}].map(n => (
-                <span key={n.p} onClick={() => navigate(n.p)} style={{ color: page===n.p?"#818cf8":"#94a3b8", fontSize:14, cursor:"pointer", fontWeight: page===n.p?600:400, transition:"color 0.2s" }}
-                  onMouseEnter={e => e.target.style.color="#fff"} onMouseLeave={e => e.target.style.color=page===n.p?"#818cf8":"#94a3b8"}>
-                  {n.l}
-                </span>
-              ))}
-            </div>
-            <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-              <span onClick={() => navigate("buy")} style={{ position:"relative", cursor:"pointer", fontSize:13, color:"#94a3b8" }}>
-                🛒{cartCount > 0 && <span style={{ position:"absolute", top:-8, right:-10, background:"#ef4444", borderRadius:10, padding:"1px 5px", fontSize:10, color:"#fff" }}>{cartCount}</span>}
-              </span>
-              <button onClick={() => setLoginModal(true)} style={{ background:"transparent", border:"1px solid rgba(255,255,255,0.15)", color:"#fff", padding:"6px 14px", borderRadius:8, fontSize:13, cursor:"pointer" }}>로그인</button>
-              <button onClick={() => setSignupModal(true)} style={{ background:"linear-gradient(135deg,#6366f1,#8b5cf6)", border:"none", color:"#fff", padding:"6px 14px", borderRadius:8, fontSize:13, cursor:"pointer", fontWeight:600 }}>회원가입</button>
-            </div>
-            <div onClick={() => setMobileMenu(!mobileMenu)} style={{ display:"none", cursor:"pointer", color:"#fff", fontSize:22 }}>☰</div>
-          </nav>
-        </div>
-      </header>
-
-      {/* MOBILE MENU */}
-      {mobileMenu && (
-        <div style={{ position:"fixed", inset:0, zIndex:9998, background:"rgba(15,15,35,0.98)", paddingTop:80, display:"flex", flexDirection:"column", alignItems:"center", gap:24 }}>
-          {[{l:"서비스",p:"service"},{l:"구매하기",p:"buy"},{l:"전체리뷰",p:"review"},{l:"공지사항",p:"notice"},{l:"FAQ",p:"faq"}].map(n => (
-            <span key={n.p} onClick={() => navigate(n.p)} style={{ color:"#fff", fontSize:20, cursor:"pointer" }}>{n.l}</span>
-          ))}
-          <button onClick={() => { setMobileMenu(false); setLoginModal(true); }} style={{ background:"linear-gradient(135deg,#6366f1,#8b5cf6)", border:"none", color:"#fff", padding:"12px 40px", borderRadius:12, fontSize:16, cursor:"pointer" }}>로그인</button>
-        </div>
-      )}
-
-      <div style={{ paddingTop:64 }}>
-        {page === "review" ? <ReviewPage /> :
-         page === "notice" ? <NoticePage /> :
-         page === "faq" ? <FAQPage /> :
-         page === "buy" ? <BuyPage /> :
-         page === "service" ? <ServicePage /> :
-        <>
-          {/* HERO */}
-          <section style={{ position:"relative", overflow:"hidden", padding:"80px 20px 60px", textAlign:"center" }}>
-            <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 50% 0%,rgba(99,102,241,0.15) 0%,transparent 60%)" }} />
-            <div style={{ position:"relative", zIndex:1, maxWidth:700, margin:"0 auto" }}>
-              <div style={{ color:"#818cf8", fontSize:13, fontWeight:600, letterSpacing:2, marginBottom:12 }}>YouTube Premium</div>
-              <h1 style={{ fontSize:"clamp(28px,5vw,44px)", fontWeight:900, lineHeight:1.2, marginBottom:20, background:"linear-gradient(135deg,#fff 40%,#818cf8)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>
-                단 1분이면 완성되는<br/>가장 확실한 12개월.
-              </h1>
-              <p style={{ color:"#94a3b8", fontSize:15, lineHeight:1.7, marginBottom:32 }}>
-                광고 없이 온전히 집중하는 나만의 든든한 시간.<br/>
-                <b style={{ color:"#e2e8f0" }}>공식 활성화 링크</b>를 통해 쓰던 계정 그대로 편안하게 누리세요.
-              </p>
-              <div style={{ display:"flex", justifyContent:"center", gap:12, flexWrap:"wrap", marginBottom:32 }}>
-                {["압도적 가성비","복잡한 가족 초대 NO","내 계정 그대로 적용"].map((t,i) => (
-                  <span key={i} style={{ background:"rgba(99,102,241,0.12)", border:"1px solid rgba(99,102,241,0.25)", padding:"6px 16px", borderRadius:20, fontSize:13, color:"#a78bfa" }}>{t}</span>
-                ))}
-              </div>
-              <div style={{ background:"rgba(99,102,241,0.08)", border:"1px solid rgba(99,102,241,0.2)", borderRadius:16, padding:20, display:"inline-block" }}>
-                <div style={{ color:"#ef4444", fontSize:13, fontWeight:700 }}>71% 절약</div>
-                <div style={{ color:"#475569", fontSize:14, textDecoration:"line-through" }}>234,000원</div>
-                <div style={{ color:"#fff", fontSize:32, fontWeight:900 }}>66,000원 <span style={{ fontSize:14, fontWeight:400, color:"#94a3b8" }}>/ 12개월</span></div>
-              </div>
-            </div>
-          </section>
-
-          {/* CATEGORIES */}
-          <section style={{ maxWidth:1200, margin:"0 auto", padding:"0 20px 20px" }}>
-            <div style={{ display:"flex", gap:8, overflowX:"auto", paddingBottom:8 }}>
-              {CATEGORIES.map(c => (
-                <button key={c.key} onClick={() => setCat(c.key)}
-                  style={{ whiteSpace:"nowrap", padding:"8px 18px", borderRadius:10, border: cat===c.key?"1px solid #6366f1":"1px solid rgba(255,255,255,0.08)",
-                    background: cat===c.key?"rgba(99,102,241,0.15)":"rgba(255,255,255,0.03)", color: cat===c.key?"#818cf8":"#94a3b8",
-                    fontSize:13, fontWeight:600, cursor:"pointer", transition:"all 0.2s", display:"flex", alignItems:"center", gap:6 }}>
-                  <span>{c.icon}</span>{c.label}
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {/* PRODUCTS */}
-          <section style={{ maxWidth:1200, margin:"0 auto", padding:"0 20px 40px" }}>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))", gap:20 }}>
-              {filtered.map(p => <ProductCard key={p.id} p={p} />)}
-            </div>
-            <div style={{ textAlign:"center", marginTop:24 }}>
-              <button onClick={() => navigate("buy")} style={{ background:"transparent", border:"1px solid rgba(255,255,255,0.1)", color:"#94a3b8", padding:"10px 28px", borderRadius:10, fontSize:13, cursor:"pointer" }}>모두보기</button>
-            </div>
-          </section>
-
-          {/* CHARITY */}
-          <section style={{ maxWidth:900, margin:"0 auto", padding:"20px 20px 40px" }}>
-            <div style={{ background:"linear-gradient(135deg,#1a2e1a,#1a1a2e)", borderRadius:20, padding:32, border:"1px solid rgba(74,222,128,0.15)", textAlign:"center" }}>
-              <h3 style={{ color:"#fff", fontSize:20, fontWeight:800, marginBottom:12 }}>고튜브는 <span style={{ color:"#4ade80" }}>초록우산 어린이재단</span>과 함께합니다</h3>
-              <p style={{ color:"#94a3b8", fontSize:14, lineHeight:1.7, marginBottom:16 }}>
-                고객님들의 소중한 결제 금액 일부는 도움이 필요한 국내 아동들을 위해 투명하게 정기 후원됩니다.
-              </p>
-              <span style={{ display:"inline-block", background:"rgba(74,222,128,0.1)", border:"1px solid rgba(74,222,128,0.3)", padding:"6px 16px", borderRadius:20, color:"#4ade80", fontSize:12, fontWeight:600 }}>✔️ 정기후원 인증 가맹점</span>
-            </div>
-          </section>
-
-          {/* LIVE BANNER */}
-          <section style={{ maxWidth:900, margin:"0 auto", padding:"0 20px 40px" }}>
-            <div style={{ background:"linear-gradient(135deg,#1e1b4b,#312e81)", borderRadius:16, padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12, border:"1px solid rgba(99,102,241,0.3)" }}>
-              <div>
-                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-                  <span style={{ width:8, height:8, borderRadius:"50%", background:"#ef4444", animation:"pulse 1.5s infinite" }} />
-                  <span style={{ color:"#fbbf24", fontSize:13, fontWeight:600 }}>실시간 {liveCount}명이 결제 중</span>
-                </div>
-                <div style={{ color:"#fff", fontWeight:700, fontSize:16 }}>유튜브 프리미엄 12개월 패키지</div>
-                <div style={{ color:"#a78bfa", fontSize:12, marginTop:2 }}>제휴 계약 종료 전, 마지막 기회</div>
-              </div>
-              <button onClick={() => navigate("buy")} style={{ background:"#fff", color:"#1e1b4b", border:"none", padding:"10px 24px", borderRadius:10, fontWeight:700, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>잔여 혜택 확인</button>
-            </div>
-          </section>
-
-          {/* WHY GOTUBE */}
-          <section style={{ maxWidth:900, margin:"0 auto", padding:"0 20px 60px", textAlign:"center" }}>
-            <h2 style={{ color:"#fff", fontSize:28, fontWeight:800, marginBottom:40 }}>고튜브를 선택하는 이유</h2>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:20 }}>
-              {[
-                { icon:"🛡️", title:"비밀번호 공유 X", desc:"개인정보 100% 안전" },
-                { icon:"⚡", title:"당일 순차 발송", desc:"결제 확인 후 꼼꼼한 처리" },
-                { icon:"⭐", title:"4.9점 만족도", desc:"재구매율 1위" },
-              ].map((r,i) => (
-                <div key={i} style={{ background:"#1a1a2e", borderRadius:16, padding:28, border:"1px solid rgba(255,255,255,0.06)" }}>
-                  <div style={{ fontSize:36, marginBottom:12 }}>{r.icon}</div>
-                  <div style={{ color:"#fff", fontWeight:700, fontSize:16, marginBottom:4 }}>{r.title}</div>
-                  <div style={{ color:"#94a3b8", fontSize:13 }}>{r.desc}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ marginTop:32, padding:"24px 20px", background:"rgba(99,102,241,0.05)", borderRadius:16, border:"1px solid rgba(99,102,241,0.1)" }}>
-              <p style={{ color:"#e2e8f0", fontSize:15, lineHeight:1.7 }}>
-                간단하게 가입하고, 바로 시작하는 초간편 프로세스<br/>
-                복잡한 인증 절차나 불필요한 정보 입력 없이<br/>
-                <b>1분이면 가입 완료</b>, 기다림 없이 바로 사용할 수 있습니다.
-              </p>
-              <p style={{ color:"#818cf8", fontSize:12, marginTop:12 }}>빠르고 간단한 과정으로 소중한 시간을 아껴드려요.</p>
-            </div>
-          </section>
-
-          {/* CHAT SECTION */}
-          <section style={{ maxWidth:900, margin:"0 auto", padding:"0 20px 60px" }}>
-            <div style={{ textAlign:"center", marginBottom:32 }}>
-              <h2 style={{ color:"#fff", fontSize:28, fontWeight:800, marginBottom:8 }}>공유 계정과 다릅니다</h2>
-              <p style={{ color:"#94a3b8", fontSize:14 }}>공유 계정과 어떻게 다른지, 정말 안전한지 지금 확인해 보세요</p>
-            </div>
-            <div style={{ maxWidth:400, margin:"0 auto", background:"#1a1a2e", borderRadius:20, overflow:"hidden", border:"1px solid rgba(255,255,255,0.06)" }}>
-              <div style={{ background:"#6366f1", padding:"12px 16px", display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:32, height:32, borderRadius:"50%", background:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:14, color:"#6366f1" }}>G</div>
-                <div>
-                  <div style={{ color:"#fff", fontWeight:700, fontSize:14 }}>고튜브 상담</div>
-                </div>
-              </div>
-              <div style={{ padding:16, maxHeight:380, overflowY:"auto" }}>
-                {CHAT_MSGS.map((m,i) => (
-                  <div key={i} style={{ display:"flex", justifyContent: m.from==="user"?"flex-end":"flex-start", marginBottom:12, animation:`fadeInUp 0.4s ease ${i*0.15}s both` }}>
-                    <div style={{ maxWidth:"80%", background: m.from==="user"?"#6366f1":"#252547", borderRadius: m.from==="user"?"16px 16px 4px 16px":"16px 16px 16px 4px", padding:"10px 14px" }}>
-                      <div style={{ color:"#fff", fontSize:13, lineHeight:1.6 }} dangerouslySetInnerHTML={{ __html: m.text.replace(/\n/g,"<br/>") }} />
-                      <div style={{ color:"rgba(255,255,255,0.4)", fontSize:10, marginTop:4, textAlign:"right" }}>{m.time}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div style={{ maxWidth:500, margin:"24px auto 0", textAlign:"center" }}>
-              <p style={{ color:"#e2e8f0", fontSize:14, lineHeight:1.8 }}>
-                쓰시던 구글 계정 그대로, <b>비밀번호 공유 없이 안전하게!</b><br/>
-                VPN 설정 필요 없이 <b>보내드리는 링크 클릭 한 번</b>에 끝납니다.
-              </p>
-              <p style={{ color:"#a78bfa", fontSize:14, marginTop:12, fontWeight:600 }}>
-                단 한 번 결제로 1년 내내 마음 편히, 12개월 66,000원
-              </p>
-            </div>
-          </section>
-
-          {/* REVIEWS */}
-          <section style={{ padding:"0 0 60px", overflow:"hidden" }}>
-            <div style={{ textAlign:"center", marginBottom:32, padding:"0 20px" }}>
-              <h2 style={{ color:"#fff", fontSize:24, fontWeight:800, marginBottom:8 }}>고객님들의 생생한 찐 후기</h2>
-              <p style={{ color:"#94a3b8", fontSize:14 }}>평점 4.9점! 재구매율 98%가 증명합니다.</p>
-            </div>
-            <div style={{ overflow:"hidden" }}
-              onMouseEnter={() => setReviewAnimPaused(true)}
-              onMouseLeave={() => setReviewAnimPaused(false)}>
-              <div style={{ display:"flex", gap:16, animation:`scrollReviews 40s linear infinite`, animationPlayState: reviewAnimPaused?"paused":"running", width:"max-content" }}>
-                {[...REVIEWS, ...REVIEWS].map((r,i) => (
-                  <div key={i} style={{ minWidth:280, maxWidth:280, background:"#1a1a2e", borderRadius:16, padding:20, border:"1px solid rgba(255,255,255,0.06)", flexShrink:0 }}>
-                    <div style={{ color:"#fbbf24", fontSize:12, marginBottom:8 }}>{"⭐".repeat(r.stars)}</div>
-                    <div style={{ color:"#fff", fontSize:15, fontWeight:700, marginBottom:8 }}>{r.title}</div>
-                    <div style={{ color:"#94a3b8", fontSize:12, whiteSpace:"pre-line", lineHeight:1.6, minHeight:60 }}>{r.text}</div>
-                    <div style={{ marginTop:12, color:"#6366f1", fontSize:11 }}>{r.user} ({r.tag})</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div style={{ textAlign:"center", marginTop:32 }}>
-              <button onClick={() => navigate("review")} style={{ background:"linear-gradient(135deg,#6366f1,#8b5cf6)", border:"none", color:"#fff", padding:"14px 40px", borderRadius:12, fontSize:15, fontWeight:700, cursor:"pointer" }}>구매하러 가기</button>
-            </div>
-          </section>
-        </>}
-      </div>
-
-      {/* FOOTER */}
-      <footer style={{ borderTop:"1px solid rgba(255,255,255,0.06)", padding:"32px 20px", textAlign:"center" }}>
-        <div style={{ display:"flex", justifyContent:"center", gap:16, marginBottom:16 }}>
-          <span style={{ color:"#64748b", fontSize:12, cursor:"pointer" }} onClick={() => navigate("home")}>이용약관</span>
-          <span style={{ color:"#64748b", fontSize:12, cursor:"pointer" }} onClick={() => navigate("home")}>개인정보처리방침</span>
-        </div>
-        <div style={{ color:"#475569", fontSize:11, lineHeight:1.8 }}>
-          상호 : 미디어브릿지 | 대표자 : 김동현 | 소재지 : 경상남도 김해시 금관대로 1205, 202-s77호(외동)<br/>
-          사업자 등록번호 : 448-16-02860 | 통신판매신고번호 : 2025-김해장유-0259<br/>
-          개인정보관리책임자 : 김동현<br/>
-          Copyright ⓒ 2026 고튜브 All rights reserved.
-        </div>
-      </footer>
-
-      {/* FLOATING KAKAO */}
-      {showKakao && (
-        <div style={{ position:"fixed", bottom:24, right:24, zIndex:900, display:"flex", flexDirection:"column", alignItems:"flex-end", gap:8 }}>
-          <div onClick={() => alert("카카오톡 상담 연결 (데모)")}
-            style={{ width:56, height:56, borderRadius:"50%", background:"#fee500", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", boxShadow:"0 4px 20px rgba(0,0,0,0.3)", animation:"float 3s ease-in-out infinite" }}>
-            <span style={{ fontSize:28 }}>💬</span>
-          </div>
-        </div>
-      )}
-
-      {/* POPUP - GEMINI PROMO */}
-      {showPopup && (
-        <div style={{ position:"fixed", bottom:24, left:24, zIndex:950, animation:"slideUp 0.4s ease", maxWidth:320 }}>
-          <div style={{ background:"#1e1b4b", borderRadius:16, padding:16, border:"1px solid rgba(99,102,241,0.3)", boxShadow:"0 8px 32px rgba(0,0,0,0.4)" }}>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
-              <span style={{ color:"#fbbf24", fontSize:12, fontWeight:600 }}>🔥 최대 6인 공유 특가</span>
-              <span onClick={() => setShowPopup(false)} style={{ color:"#64748b", cursor:"pointer", fontSize:16 }}>✕</span>
-            </div>
-            <div style={{ color:"#fff", fontWeight:700, fontSize:14, marginBottom:4 }}>Gemini Pro 18개월 파티장 팩</div>
-            <div style={{ color:"#a78bfa", fontSize:13 }}>
-              <span style={{ textDecoration:"line-through", color:"#475569" }}>정가 3,132,000원</span> → <b>월 1,194원</b>
-            </div>
-            <button onClick={() => { setShowPopup(false); setCat("ai"); navigate("home"); }}
-              style={{ width:"100%", marginTop:12, padding:"8px", borderRadius:8, border:"none", background:"linear-gradient(135deg,#6366f1,#8b5cf6)", color:"#fff", fontWeight:600, fontSize:12, cursor:"pointer" }}>
-              자세히 보기 →
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ORDER COMPLETE TOAST */}
-      <div style={{ position:"fixed", bottom:100, left:"50%", transform:"translateX(-50%)", zIndex:0, opacity:0 }}>
-        <div style={{ background:"#1a1a2e", borderRadius:12, padding:"12px 20px", display:"flex", alignItems:"center", gap:8, border:"1px solid rgba(255,255,255,0.1)" }}>
-          <span style={{ fontSize:20 }}>💬</span>
-          <span style={{ color:"#fff", fontSize:13 }}>주문 완료! 카톡을 확인해주세요</span>
-        </div>
-      </div>
-
-      {/* MODALS */}
-      <Modal show={loginModal} onClose={() => setLoginModal(false)}><LoginForm /></Modal>
-      <Modal show={signupModal} onClose={() => setSignupModal(false)}><SignupForm /></Modal>
-      <Modal show={!!selectedProduct} onClose={() => setSelectedProduct(null)}><ProductDetail /></Modal>
-    </div>
-  );
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none!important}
+  .hamburger{display:block!important}
+  .hero h1{font-size:28px}
+  .product-grid{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr}
+  .live-inner{flex-direction:column;text-align:center}
 }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="header">
+  <div class="header-inner">
+    <div class="logo" onclick="navigate('home')">
+      <div class="logo-icon">G</div>
+      <span class="logo-text">고튜브</span>
+    </div>
+    <div class="nav">
+      <div class="nav-links" id="navLinks">
+        <button class="nav-link" data-page="service" onclick="navigate('service')">서비스</button>
+        <button class="nav-link" data-page="buy" onclick="navigate('buy')">구매하기</button>
+        <button class="nav-link" data-page="review" onclick="navigate('review')">전체리뷰</button>
+        <button class="nav-link" data-page="notice" onclick="navigate('notice')">공지사항</button>
+        <button class="nav-link" data-page="faq" onclick="navigate('faq')">FAQ</button>
+      </div>
+      <div class="nav-btns">
+        <span class="cart-icon" onclick="navigate('buy')">🛒<span class="cart-badge" id="cartBadge">0</span></span>
+        <button class="btn-login" onclick="openModal('loginModal')">로그인</button>
+        <button class="btn-signup" onclick="openModal('signupModal')">회원가입</button>
+      </div>
+      <button class="hamburger" onclick="toggleMobile()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu">
+  <button class="nav-link" onclick="navigate('service')">서비스</button>
+  <button class="nav-link" onclick="navigate('buy')">구매하기</button>
+  <button class="nav-link" onclick="navigate('review')">전체리뷰</button>
+  <button class="nav-link" onclick="navigate('notice')">공지사항</button>
+  <button class="nav-link" onclick="navigate('faq')">FAQ</button>
+  <button class="btn-signup" style="padding:12px 40px;font-size:16px;border-radius:12px" onclick="toggleMobile();openModal('loginModal')">로그인</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<main id="mainContent" style="padding-top:64px"></main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <span onclick="navigate('home')">이용약관</span>
+    <span onclick="navigate('home')">개인정보처리방침</span>
+  </div>
+  <div class="footer-info">
+    상호 : 미디어브릿지 | 대표자 : 김동현 | 소재지 : 경상남도 김해시 금관대로 1205, 202-s77호(외동)<br>
+    사업자 등록번호 : 448-16-02860 | 통신판매신고번호 : 2025-김해장유-0259<br>
+    개인정보관리책임자 : 김동현<br>
+    Copyright ⓒ 2026 고튜브 All rights reserved.
+  </div>
+</footer>
+
+<!-- FLOATING KAKAO -->
+<button class="kakao-float" onclick="alert('카카오톡 상담 연결 (데모)')">💬</button>
+
+<!-- PROMO POPUP -->
+<div class="promo-popup" id="promoPopup" style="display:none">
+  <div class="promo-inner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="color:#fbbf24;font-size:12px;font-weight:600">🔥 최대 6인 공유 특가</span>
+      <button class="promo-close" onclick="closePromo()">✕</button>
+    </div>
+    <div class="promo-title">Gemini Pro 18개월 파티장 팩</div>
+    <div style="color:var(--lavender);font-size:13px"><span style="text-decoration:line-through;color:var(--dark-dim)">정가 3,132,000원</span> → <b>월 1,194원</b></div>
+    <button class="promo-btn" onclick="closePromo();navigate('buy')">자세히 보기 →</button>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <div class="modal-title">로그인</div>
+    <input class="modal-input" placeholder="이메일" type="email"/>
+    <input class="modal-input" placeholder="비밀번호" type="password"/>
+    <button class="modal-submit" onclick="alert('로그인 기능은 데모입니다.');closeModal('loginModal')">로그인</button>
+    <div class="modal-link">계정이 없으신가요? <a onclick="closeModal('loginModal');openModal('signupModal')">회원가입</a></div>
+  </div>
+</div>
+
+<!-- SIGNUP MODAL -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('signupModal')">✕</button>
+    <div class="modal-title">회원가입</div>
+    <input class="modal-input" placeholder="이메일" type="email"/>
+    <input class="modal-input" placeholder="비밀번호" type="password"/>
+    <input class="modal-input" placeholder="비밀번호 확인" type="password"/>
+    <button class="modal-submit" onclick="alert('회원가입 기능은 데모입니다.');closeModal('signupModal')">회원가입</button>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-box" id="detailContent"></div>
+</div>
+
+<script>
+// DATA
+const PRODUCTS=[
+  {id:1,cat:"video",badge:"SALE",best:true,img:"https://cdn.imweb.me/upload/S20260213878391b35f5c9/b42c33d69b63f.png",brand:"유튜브",name:"프리미엄 + 뮤직 12개월권",desc:"가장 많이 찾는 구성",price:66000,orig:234000,disc:70,period:"12개월",features:["광고 없이 영상 시청","백그라운드 재생","오프라인 저장","모든 기능 포함"],sold:0},
+  {id:2,cat:"ai",badge:"파티장 특가",best:true,img:"https://cdn.imweb.me/upload/S20260213878391b35f5c9/05beac9d11e99.png",brand:"제미나이",name:"프로 18개월 파티장 팩",desc:"최대 6인 공유 (본인 + 5명 초대가능)",price:129000,orig:3132000,disc:95,period:"18개월",perMonth:"1인 월 1,194원",features:["내 Google 계정에 직접 적용","Gemini 3.1 Pro 무제한","5TB 클라우드 포함","가족/지인 최대 5명 무료초대"],sold:0},
+  {id:3,cat:"video",badge:"SALE",best:false,img:"https://cdn.imweb.me/upload/S20260213878391b35f5c9/b42c33d69b63f.png",brand:"유튜브",name:"프리미엄 + 뮤직 3개월권",desc:"단기 이용 추천",price:27000,orig:58500,disc:54,period:"3개월",features:["광고 없이 영상 시청","백그라운드 재생","오프라인 저장","모든 기능 포함"],sold:0},
+  {id:4,cat:"ai",badge:"",best:true,img:"https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg",brand:"ChatGPT",name:"Plus 1개월권",desc:"자동결제 없는 수기 갱신 패키지",price:19000,orig:28000,disc:32,period:"1개월",features:["자동 결제 없는 수동 연장","환율 영향 없는 100% 고정 원화","GPT-4o, DALL-E 3 무제한 지원","기존 대화 기록 100% 유지"],sold:0},
+  {id:5,cat:"software",badge:"SALE",best:false,img:"https://cdn.imweb.me/upload/S20260213878391b35f5c9/950cce2e2ed99.png",brand:"캔바",name:"프로 6개월",desc:"디자인 작업 필수 구독",price:29900,orig:59400,disc:50,period:"6개월",features:["프로 템플릿 무제한","무제한 디자인 요소","팀 라이브러리","모든 기능 포함"],sold:0},
+  {id:6,cat:"music",badge:"SALE",best:false,img:"https://cdn.imweb.me/upload/S20260213878391b35f5c9/12dce80cbca3e.png",brand:"스포티파이",name:"프리미엄 12개월권",desc:"결제대행",price:59800,orig:130800,disc:54,period:"12개월",features:["광고 없이 음악 청취","고음질 스트리밍","오프라인 재생","모든 기능 포함"],sold:0,soldout:true}
+];
+
+const REVIEWS=[
+  {title:"30초 컷 실화냐?",text:"결제하자마자 카톡 띠링 울려서 깜놀했네요.\n한국인 성격에 딱 맞는 속도입니다 ㅋㅋ",user:"김O수님",tag:"3개월째 이용"},
+  {title:"가격이 깡패입니다",text:"월 15,000원 내다가 4,500원 꼴이라니...\n진작 알았으면 치킨 10마리는 사 먹었을 듯 ㅠㅠ",user:"이O호님",tag:"12개월권"},
+  {title:"VPN 안 써서 너무 편함",text:"다른 데는 VPN 켜고 우회하고 난리 쳐야 되는데\n여긴 그냥 링크 누르고 '가입' 누르면 끝이라 대박 편함.",user:"박O진님",tag:"신규"},
+  {title:"알고리즘 그대로 유지됨",text:"계정 새로 파야 되는 줄 알고 걱정했는데\n쓰던 거 그대로 써서 구독 채널 다 살아있어요!",user:"최O혁님",tag:"재연장"},
+  {title:"새벽 3시에도 바로 됨",text:"밤새 유튜브 보다가 광고 짜증 나서 샀는데\n새벽인데도 3초 만에 알림 톡 오네요.",user:"강O우님",tag:"12개월권"},
+  {title:"비번 안 알려줘도 돼서 안심",text:"남한테 비번 알려주기 찝찝했는데\n여긴 초대장 방식이라 제 정보가 털릴 일이 없네요.",user:"조O현님",tag:"6개월권"},
+  {title:"광고 없는 삶... 최고",text:"이제 광고 나오는 유튜브는 상상할 수도 없습니다.\n삶의 질이 달라짐. 무조건 하세요.",user:"윤O서님",tag:"신규"},
+  {title:"뮤직까지 공짜라니",text:"유튜브만 되는 줄 알았는데 유튜브 뮤직도 되네요?\n멜론 해지하고 이걸로 갈아탔습니다.",user:"장O원님",tag:"12개월권"},
+  {title:"아이폰도 잘 됩니다",text:"애플이라 결제 막혀서 짜증 났는데\n여기서 하니까 기종 상관없이 바로 되네요.",user:"임O호님",tag:"아이폰 유저"},
+  {title:"컴맹도 1분이면 함",text:"복잡한 거 딱 질색인데,\n그냥 카톡 온 거 누르고 '시작하기' 누르니까 끝남.",user:"서O연님",tag:"50대"}
+];
+
+const CHAT=[
+  {from:"user",text:"쓰던 계정 그대로 쓰는 건가요?",time:"오후 2:15"},
+  {from:"bot",text:"네, 고객님!\n<b>쓰시던 구글 아이디 그대로</b>\n적용됩니다.",time:"오후 2:16"},
+  {from:"user",text:"가격은 얼마인가요?\n곧 인상된다는 말이 있던데..",time:"오후 2:17"},
+  {from:"bot",text:'📢 <b>여전히 최저가!</b>\n\n현재 <b>12개월 66,000원</b>(월 5,500원)에 제공 중입니다.\n공식 가격 대비 <b>약 70% 저렴</b>하며, 지금 결제해 두시면 <b>1년 내내 추가 요금 없이</b> 쭉 이용 가능합니다.',time:"오후 2:18"},
+  {from:"user",text:"복잡한 거 딱 질색인데...\nVPN 쓰고 그래야 하나요?",time:"오후 2:19"},
+  {from:"bot",text:"아니요!\n<b>VPN 절대 필요 없습니다.</b> 🙅‍♂️\n\n구매 즉시 보내드리는 <b>활성화 링크</b>만 클릭하세요.\n'가입' 버튼 하나만 누르면\n<b>3초 만에 세팅이 끝납니다.</b>",time:"오후 2:20"}
+];
+
+const NOTICES=[
+  {title:"[공지] 유튜브 프리미엄 가격 인상 안내",date:"2026.04.01"},
+  {title:"[공지] 제미나이 프로 파티장 팩 출시!",date:"2026.03.15"},
+  {title:"[공지] ChatGPT Plus 1개월권 재입고",date:"2026.03.10"},
+  {title:"[공지] 스포티파이 일시 품절 안내",date:"2026.03.05"},
+  {title:"[공지] 캔바 프로 6개월 입고 완료",date:"2026.02.28"}
+];
+
+const FAQS=[
+  {q:"구매 후 얼마나 걸리나요?",a:"결제 확인 후 당일 순차 발송됩니다. 보통 1시간 이내에 카카오톡으로 활성화 링크를 보내드립니다."},
+  {q:"VPN이 필요한가요?",a:"아니요! VPN 없이 보내드리는 링크만 클릭하시면 바로 적용됩니다."},
+  {q:"기존 계정을 그대로 사용할 수 있나요?",a:"네, 기존에 사용하시던 구글 계정 그대로 적용됩니다. 구독 채널, 재생목록 등 모든 데이터가 유지됩니다."},
+  {q:"환불이 가능한가요?",a:"활성화 전이라면 100% 환불 가능합니다. 활성화 후에는 환불이 어렵습니다."},
+  {q:"비밀번호를 공유해야 하나요?",a:"아니요! 비밀번호 공유 없이 공식 초대 링크 방식으로 안전하게 적용됩니다."}
+];
+
+// STATE
+let currentPage='home';
+let currentCat='all';
+let cartCount=0;
+let liveCount=28;
+
+// UTILS
+const fmt=n=>n.toLocaleString('ko-KR');
+const esc=s=>s.replace(/\n/g,'<br>');
+
+// NAVIGATION
+function navigate(page){
+  currentPage=page;
+  document.getElementById('mobileMenu').classList.remove('open');
+  render();
+  window.scrollTo(0,0);
+  document.querySelectorAll('.nav-link').forEach(l=>{
+    l.classList.toggle('active',l.dataset.page===page);
+  });
+}
+
+function toggleMobile(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// MODALS
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function closePromo(){document.getElementById('promoPopup').style.display='none'}
+
+// PRODUCT CARD HTML
+function productCardHTML(p){
+  let badges='';
+  if(p.badge)badges+=`<span class="badge ${p.badge==='SALE'?'badge-sale':p.badge==='파티장 특가'?'badge-special':'badge-best'}">${p.badge}</span>`;
+  if(p.best)badges+=`<span class="badge badge-best">BEST</span>`;
+  if(p.soldout)badges+=`<span class="badge badge-soldout">SOLDOUT</span>`;
+
+  return `<div class="product-card" onclick="${p.soldout?'':('openDetail('+p.id+')')}">
+    <div class="card-badges">${badges}</div>
+    <div class="card-header">
+      <img src="${p.img}" alt="${p.brand}" onerror="this.style.display='none'"/>
+      <div><div class="card-brand">${p.brand}</div><div class="card-name">${p.name}</div></div>
+    </div>
+    <div class="card-desc">${p.desc}</div>
+    <div class="card-divider"></div>
+    <div class="card-pricing">
+      <div><span class="card-price">${fmt(p.price)}원</span><span class="card-period">${p.period}</span></div>
+      ${p.perMonth?`<div class="card-per-month">(${p.perMonth})</div>`:''}
+      <div style="margin-top:4px"><span class="card-orig">${fmt(p.orig)}원</span><span class="card-disc">-${p.disc}%</span></div>
+    </div>
+    <div class="card-features">${p.features.map(f=>`<div class="card-feature">${f}</div>`).join('')}</div>
+    ${!p.soldout?`<div class="card-sold">이번 달 <b>${p.sold}</b>명 구매</div>`:''}
+    <div class="card-action">
+      <button class="btn-buy ${p.soldout?'soldout':''}" onclick="event.stopPropagation();${p.soldout?'':'openDetail('+p.id+')'}">
+        ${p.soldout?'현재 품절':'지금 구매하기 →'}
+      </button>
+      ${p.soldout?'<div class="soldout-label">일시 품절</div>':''}
+    </div>
+  </div>`;
+}
+
+// DETAIL MODAL
+function openDetail(id){
+  const p=PRODUCTS.find(x=>x.id===id);
+  if(!p)return;
+  document.getElementById('detailContent').innerHTML=`
+    <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    <div class="detail-header">
+      <img src="${p.img}" alt=""/>
+      <div><div class="detail-brand">${p.brand}</div><div class="detail-name">${p.name}</div></div>
+    </div>
+    <div class="detail-desc">${p.desc}</div>
+    <div class="detail-price-box">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <span class="detail-price">${fmt(p.price)}원</span>
+        <span class="card-disc">-${p.disc}%</span>
+      </div>
+      <div style="color:var(--dark-dim);font-size:13px;text-decoration:line-through">정가 ${fmt(p.orig)}원</div>
+      ${p.perMonth?`<div style="color:var(--lavender);font-size:13px;margin-top:4px">${p.perMonth}</div>`:''}
+    </div>
+    <div style="margin-bottom:20px">${p.features.map(f=>`<div class="detail-feature">✓ ${f}</div>`).join('')}</div>
+    <button class="btn-cart" onclick="addToCart();closeModal('detailModal')">장바구니 담기</button>
+    <button class="btn-direct" onclick="alert('결제 페이지로 이동합니다. (데모)');closeModal('detailModal')">바로 구매하기</button>
+  `;
+  openModal('detailModal');
+}
+
+function addToCart(){
+  cartCount++;
+  const b=document.getElementById('cartBadge');
+  b.style.display='inline';
+  b.textContent=cartCount;
+  alert('장바구니에 추가되었습니다!');
+}
+
+// REVIEW CARD
+function reviewCardHTML(r){
+  return `<div class="review-card">
+    <div class="review-stars">⭐⭐⭐⭐⭐</div>
+    <div class="review-title">${r.title}</div>
+    <div class="review-text">${esc(r.text)}</div>
+    <div class="review-user">${r.user} (${r.tag})</div>
+  </div>`;
+}
+
+// PAGES
+function homeHTML(){
+  const filtered=currentCat==='all'?PRODUCTS:PRODUCTS.filter(p=>p.cat===currentCat);
+  const cats=[{key:'all',icon:'⊞',label:'전체보기'},{key:'video',icon:'▶',label:'영상'},{key:'music',icon:'♫',label:'음악'},{key:'ai',icon:'✦',label:'AI 툴'},{key:'software',icon:'◫',label:'소프트웨어'}];
+
+  return `
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-sub">YouTube Premium</div>
+      <h1>단 1분이면 완성되는<br>가장 확실한 12개월.</h1>
+      <p>광고 없이 온전히 집중하는 나만의 든든한 시간.<br><b>공식 활성화 링크</b>를 통해 쓰던 계정 그대로 편안하게 누리세요.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">압도적 가성비</span>
+        <span class="hero-tag">복잡한 가족 초대 NO</span>
+        <span class="hero-tag">내 계정 그대로 적용</span>
+      </div>
+      <div class="hero-price-box">
+        <div class="discount">71% 절약</div>
+        <div class="orig">234,000원</div>
+        <div class="price">66,000원 <span>/ 12개월</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <div class="categories">
+    ${cats.map(c=>`<button class="cat-btn ${currentCat===c.key?'active':''}" onclick="currentCat='${c.key}';render()">${c.icon} ${c.label}</button>`).join('')}
+  </div>
+
+  <!-- PRODUCTS -->
+  <section class="products">
+    <div class="product-grid">${filtered.map(p=>productCardHTML(p)).join('')}</div>
+    <div class="view-all"><button onclick="navigate('buy')">모두보기</button></div>
+  </section>
+
+  <!-- CHARITY -->
+  <section class="charity">
+    <div class="charity-box">
+      <h3>고튜브는 <span>초록우산 어린이재단</span>과 함께합니다</h3>
+      <p>고객님들의 소중한 결제 금액 일부는 도움이 필요한 국내 아동들을 위해 투명하게 정기 후원됩니다.<br>믿고 이용할 수 있는 투명한 서비스, 고튜브가 앞장서겠습니다.</p>
+      <span class="charity-badge">✔️ 정기후원 인증 가맹점</span>
+    </div>
+  </section>
+
+  <!-- LIVE BANNER -->
+  <section class="live-banner">
+    <div class="live-inner">
+      <div>
+        <div><span class="live-dot"></span><span class="live-count">실시간 <span id="liveNum">${liveCount}</span>명이 결제 중</span></div>
+        <div class="live-title">유튜브 프리미엄 12개월 패키지</div>
+        <div class="live-sub">제휴 계약 종료 전, 마지막 기회</div>
+      </div>
+      <button class="live-btn" onclick="navigate('buy')">잔여 혜택 확인</button>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section class="why">
+    <h2>고튜브를 선택하는 이유</h2>
+    <div class="why-grid">
+      <div class="why-card"><div class="why-icon">🛡️</div><div class="why-title">비밀번호 공유 X</div><div class="why-desc">개인정보 100% 안전</div></div>
+      <div class="why-card"><div class="why-icon">⚡</div><div class="why-title">당일 순차 발송</div><div class="why-desc">결제 확인 후 꼼꼼한 처리</div></div>
+      <div class="why-card"><div class="why-icon">⭐</div><div class="why-title">4.9점 만족도</div><div class="why-desc">재구매율 1위</div></div>
+    </div>
+    <div class="why-note">
+      <p>간단하게 가입하고, 바로 시작하는 초간편 프로세스<br>복잡한 인증 절차나 불필요한 정보 입력 없이<br><b>1분이면 가입 완료</b>, 기다림 없이 바로 사용할 수 있습니다.</p>
+      <small>빠르고 간단한 과정으로 소중한 시간을 아껴드려요.</small>
+    </div>
+  </section>
+
+  <!-- CHAT -->
+  <section class="chat-section">
+    <div class="chat-header-text">
+      <h2>공유 계정과 다릅니다</h2>
+      <p>공유 계정과 어떻게 다른지, 정말 안전한지 지금 확인해 보세요</p>
+    </div>
+    <div class="chat-box">
+      <div class="chat-top">
+        <div class="chat-avatar">G</div>
+        <div class="chat-name">고튜브 상담</div>
+      </div>
+      <div class="chat-body">
+        ${CHAT.map((m,i)=>`<div class="chat-msg ${m.from}" style="animation:fadeInUp .4s ease ${i*.15}s both">
+          <div class="chat-bubble">${esc(m.text)}<div class="chat-time">${m.time}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="chat-summary">
+      <p>쓰시던 구글 계정 그대로, <b>비밀번호 공유 없이 안전하게!</b><br>VPN 설정 필요 없이 <b>보내드리는 링크 클릭 한 번</b>에 끝납니다.</p>
+      <p class="highlight">단 한 번 결제로 1년 내내 마음 편히, 12개월 66,000원</p>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="reviews">
+    <div class="reviews-header">
+      <h2>고객님들의 생생한 찐 후기</h2>
+      <p>평점 4.9점! 재구매율 98%가 증명합니다.</p>
+    </div>
+    <div style="overflow:hidden">
+      <div class="review-track">${[...REVIEWS,...REVIEWS].map(r=>reviewCardHTML(r)).join('')}</div>
+    </div>
+    <div class="reviews-cta"><button class="btn-cta" onclick="navigate('buy')">구매하러 가기</button></div>
+  </section>`;
+}
+
+function buyPageHTML(){
+  return `<div class="page">
+    <h2>구매하기</h2><p class="subtitle">원하는 상품을 선택하세요</p>
+    <div class="product-grid">${PRODUCTS.map(p=>productCardHTML(p)).join('')}</div>
+  </div>`;
+}
+
+function reviewPageHTML(){
+  return `<div class="page">
+    <h2>전체 리뷰</h2><p class="subtitle">평점 4.9점 · 재구매율 98%</p>
+    ${REVIEWS.map(r=>`<div class="review-page-card">
+      <div style="color:#fbbf24;margin-bottom:8px">⭐⭐⭐⭐⭐</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:8px">${r.title}</div>
+      <div style="color:var(--muted);font-size:14px;white-space:pre-line;line-height:1.6">${r.text}</div>
+      <div style="color:var(--primary);font-size:12px;margin-top:12px">${r.user} (${r.tag})</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function noticePageHTML(){
+  return `<div class="page">
+    <h2>공지사항</h2><div style="margin-bottom:32px"></div>
+    ${NOTICES.map(n=>`<div class="notice-item"><span class="notice-title">${n.title}</span><span class="notice-date">${n.date}</span></div>`).join('')}
+  </div>`;
+}
+
+function faqPageHTML(){
+  return `<div class="page">
+    <h2>자주 묻는 질문</h2><div style="margin-bottom:32px"></div>
+    ${FAQS.map((f,i)=>`<div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(${i})"><span>Q. ${f.q}</span><span class="faq-arrow" id="faqArrow${i}">▾</span></div>
+      <div class="faq-a" id="faqA${i}">A. ${f.a}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function servicePageHTML(){
+  const items=[
+    {icon:"🛡️",title:"비밀번호 공유 없는 안전한 방식",desc:"공식 활성화 링크를 통해 고객님의 계정에 직접 적용됩니다. 비밀번호를 공유하지 않아 개인정보가 100% 안전합니다."},
+    {icon:"⚡",title:"당일 순차 발송",desc:"결제 확인 후 순차적으로 빠르게 처리해드립니다. 활성화 링크를 카카오톡으로 보내드리며, 클릭 한 번으로 적용됩니다."},
+    {icon:"💰",title:"압도적 가성비",desc:"공식 가격 대비 최대 70% 이상 할인된 가격으로 제공합니다. 한 번 결제로 기간 내내 추가 요금 없이 이용 가능합니다."},
+    {icon:"🔧",title:"철저한 A/S",desc:"이용 중 문제가 발생하면 카카오톡 상담을 통해 빠르게 해결해드립니다."}
+  ];
+  return `<div class="page">
+    <h2>서비스 안내</h2><p class="subtitle">고튜브가 제공하는 프리미엄 구독 대행 서비스</p>
+    ${items.map(s=>`<div class="service-card"><div class="service-icon">${s.icon}</div><div class="service-title">${s.title}</div><div class="service-desc">${s.desc}</div></div>`).join('')}
+  </div>`;
+}
+
+function toggleFaq(i){
+  const a=document.getElementById('faqA'+i);
+  const arrow=document.getElementById('faqArrow'+i);
+  const isOpen=a.classList.contains('open');
+  document.querySelectorAll('.faq-a').forEach(el=>el.classList.remove('open'));
+  document.querySelectorAll('.faq-arrow').forEach(el=>el.classList.remove('open'));
+  if(!isOpen){a.classList.add('open');arrow.classList.add('open')}
+}
+
+// RENDER
+function render(){
+  const main=document.getElementById('mainContent');
+  switch(currentPage){
+    case 'buy':main.innerHTML=buyPageHTML();break;
+    case 'review':main.innerHTML=reviewPageHTML();break;
+    case 'notice':main.innerHTML=noticePageHTML();break;
+    case 'faq':main.innerHTML=faqPageHTML();break;
+    case 'service':main.innerHTML=servicePageHTML();break;
+    default:main.innerHTML=homeHTML();
+  }
+}
+
+// SCROLL HANDLER
+window.addEventListener('scroll',()=>{
+  document.getElementById('header').classList.toggle('scrolled',window.scrollY>60);
+});
+
+// LIVE COUNT
+setInterval(()=>{
+  liveCount+=Math.floor(Math.random()*3)-1;
+  if(liveCount<20)liveCount=20;
+  const el=document.getElementById('liveNum');
+  if(el)el.textContent=liveCount;
+},5000);
+
+// PROMO POPUP
+setTimeout(()=>{document.getElementById('promoPopup').style.display='block'},3000);
+
+// MODAL OVERLAY CLICK
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')});
+});
+
+// HASH ROUTING
+function handleHash(){
+  const h=location.hash.replace('#','').replace('/','');
+  if(h&&['service','buy','review','notice','faq'].includes(h)){navigate(h)}
+  else{navigate('home')}
+}
+window.addEventListener('hashchange',handleHash);
+
+// INIT
+render();
+</script>
+</body>
+</html>
